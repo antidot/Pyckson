@@ -43,6 +43,12 @@ class PycksonModel:
     def __init__(self, attributes):
         self.attributes = attributes
 
+    def get_attribute(self, python_name) -> PycksonAttribute:
+        for attr in self.attributes:
+            if attr.python_name == python_name:
+                return attr
+        raise KeyError('no attribute {} found'.format(python_name))
+
     def __repr__(self):
         return repr(self.attributes)
 

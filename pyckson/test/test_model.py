@@ -1,6 +1,7 @@
-from inspect import Parameter
+from inspect import Parameter, Signature
 from unittest import TestCase
-from pyckson.model import PycksonAttribute, ListType
+
+from pyckson.model import PycksonAttribute, ListType, PycksonModel
 
 
 class PycksonAttributeTest(TestCase):
@@ -82,3 +83,38 @@ class PycksonAttributeTest(TestCase):
 
         self.assertEqual(type(attribute.attr_type), ListType)
         self.assertEqual(attribute.attr_type.sub_type, int)
+
+
+class PycksonModelTest(TestCase):
+    def test_should_parse_basic_signature(self):
+        param1 = Parameter('foo', Parameter.POSITIONAL_OR_KEYWORD, annotation=int)
+        param2 = Parameter('bar', Parameter.POSITIONAL_OR_KEYWORD, annotation=str)
+        signature = Signature([param1, param2])
+
+        model = PycksonModel.from_signature(signature, {})
+
+        self.assertEqual(model.get_attribute(python_name='foo').python_name, 'foo')
+        self.assertEqual(model.get_attribute(python_name='bar').python_name, 'bar')
+
+    def test_should_ignore_self_parameter(self):
+        param1 = Parameter('foo', Parameter.POSITIONAL_OR_KEYWORD, annotation=int)
+        param2 = Parameter('self', Parameter.POSITIONAL_OR_KEYWORD)
+        signature = Signature([param1, param2])
+
+        model = PycksonModel.from_signature(signature, {})
+
+        self.assertEqual(model.get_attribute(python_name='foo').python_name, 'foo')
+        with self.assertRaises(KeyError):
+            model.get_attribute(python_name='self')
+
+    def test_should_use_typeinfo_for_lists(self):
+        param1 = Parameter('foo', Parameter.POSITIONAL_OR_KEYWORD, annotation=list)
+        param2 = Parameter('bar', Parameter.POSITIONAL_OR_KEYWORD, annotation=list)
+        signature = Signature([param1, param2])
+
+        model = PycksonModel.from_signature(signature, {'foo': int, 'bar': list})
+
+        self.assertEqual(model.get_attribute(python_name='foo').python_name, 'foo')
+        with self.assertRaises(KeyError):
+            model.get_attribute(python_name='self')
+
