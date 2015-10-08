@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='Pyckson',
-      version='0.1',
+      version='0.2',
       description='A minimalist python object mapper',
       long_description='Pyckson is python library that allows you to simply convert python object to and from json',
       url='https://github.com/antidot/Pyckson',
