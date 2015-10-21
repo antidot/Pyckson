@@ -1,4 +1,3 @@
-from functools import partial
 import json
 
 from pyckson.serializer import serialize
@@ -15,11 +14,17 @@ def dumps(obj, **kwargs):
     return json.dumps(obj, **kwargs)
 
 
-def load(obj_type, fp, **kwargs):
-    kwargs['object_hook'] = partial(parse, obj_type=obj_type)
+def load(cls, fp, **kwargs):
+    def hook(obj):
+        return parse(cls, obj)
+
+    kwargs['object_hook'] = hook
     return json.load(fp, **kwargs)
 
 
-def loads(obj_type, s, **kwargs):
-    kwargs['object_hook'] = partial(parse, obj_type=obj_type)
+def loads(cls, s, **kwargs):
+    def hook(obj):
+        return parse(cls, obj)
+
+    kwargs['object_hook'] = hook
     return json.loads(s, **kwargs)
