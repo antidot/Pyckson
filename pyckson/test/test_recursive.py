@@ -1,4 +1,5 @@
 from unittest import TestCase
+from pyckson import pyckson, serialize
 
 from pyckson.builders import PycksonModelBuilder
 
@@ -18,9 +19,10 @@ class Quz:
         pass
 
 
+@pyckson
 class Fail:
     def __init__(self, bar: 'Toto'):
-        pass
+        self.bar = bar
 
 
 class TestForwardDeclarations(TestCase):
@@ -37,4 +39,4 @@ class TestForwardDeclarations(TestCase):
 
     def test_should_raise_error_on_unresolvedtype(self):
         with self.assertRaises(TypeError):
-            PycksonModelBuilder(Fail).build_model()
+            serialize(Fail('toto'))

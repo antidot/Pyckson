@@ -4,4 +4,6 @@ python:
   - "3.4"
   - "3.5"
 # command to run tests
+install:
+  - if [[ $TRAVIS_PYTHON_VERSION == '3.3' ]]; then pip install enum34; fi
 script: nosetests

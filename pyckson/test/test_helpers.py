@@ -1,4 +1,5 @@
 from unittest import TestCase
+
 from pyckson.helpers import camel_case_name
 
 

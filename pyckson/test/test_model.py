@@ -1,4 +1,4 @@
-from inspect import Parameter, Signature
+from inspect import Parameter
 from unittest import TestCase
 
 from pyckson import listtype

@@ -1,7 +1,8 @@
 from enum import Enum
 from unittest import TestCase
+
 from pyckson.parser import parse
-from pyckson.decorators import pyckson, listtype, caseinsensitive, inline
+from pyckson.decorators import pyckson, listtype, caseinsensitive
 
 
 class ParserTest(TestCase):

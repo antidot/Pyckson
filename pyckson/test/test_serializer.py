@@ -1,6 +1,7 @@
 from unittest import TestCase
+
 from pyckson.serializer import serialize
-from pyckson.decorators import pyckson, listtype, inline
+from pyckson.decorators import pyckson, listtype
 
 
 class SerializerTest(TestCase):
