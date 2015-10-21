@@ -1,3 +1,4 @@
+from pyckson.parser import parse
 from pyckson.builders import PycksonModelBuilder
 from pyckson.const import PYCKSON_TYPEINFO, PYCKSON_ATTR, PYCKSON_MODEL
 
@@ -16,4 +17,5 @@ def pyckson(cls):
     setattr(cls, PYCKSON_ATTR, True)
     model = PycksonModelBuilder(cls).build_model()
     setattr(cls, PYCKSON_MODEL, model)
+    setattr(cls, 'parse', lambda json: parse(cls, json))
     return cls
