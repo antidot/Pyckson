@@ -1,6 +1,6 @@
 from unittest import TestCase
 from pyckson.serializer import serialize
-from pyckson.decorators import pyckson, listtype
+from pyckson.decorators import pyckson, listtype, inline
 
 
 class SerializerTest(TestCase):
@@ -44,3 +44,14 @@ class SerializerTest(TestCase):
 
         with self.assertRaises(ValueError):
             serialize(Foo(None))
+
+    def test_should_serialize_empty_mandatory_list(self):
+        @pyckson
+        @listtype('bar', str)
+        class Foo:
+            def __init__(self, bar: list):
+                self.bar = bar
+
+        result = serialize(Foo([]))
+
+        self.assertEqual(result, {'bar': []})

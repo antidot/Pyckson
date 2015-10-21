@@ -1,7 +1,8 @@
 import re
 
+from pyckson.enum import EnumParser, DefaultEnumParser
 from pyckson.model import PycksonModel
-from pyckson.const import PYCKSON_ATTR, PYCKSON_MODEL
+from pyckson.const import PYCKSON_ATTR, PYCKSON_MODEL, PYCKSON_ENUM_PARSER
 
 
 def is_pyckson(obj_type):
@@ -18,3 +19,9 @@ def get_model(obj_or_class) -> PycksonModel:
 
 def camel_case_name(python_name):
     return re.sub('_([a-z])', lambda match: match.group(1).upper(), python_name)
+
+
+def get_enum_parser(obj_or_class) -> EnumParser:
+    if not hasattr(obj_or_class, PYCKSON_ENUM_PARSER):
+        return DefaultEnumParser(obj_or_class)
+    return getattr(obj_or_class, PYCKSON_ENUM_PARSER)

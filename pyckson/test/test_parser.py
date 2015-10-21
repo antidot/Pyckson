@@ -1,6 +1,7 @@
+from enum import Enum
 from unittest import TestCase
 from pyckson.parser import parse
-from pyckson.decorators import pyckson, listtype
+from pyckson.decorators import pyckson, listtype, caseinsensitive, inline
 
 
 class ParserTest(TestCase):
@@ -45,3 +46,17 @@ class ParserTest(TestCase):
 
         with self.assertRaises(ValueError):
             parse(Foo, {})
+
+    def test_parse_with_insensitive_enum(self):
+        @caseinsensitive
+        class Foo(Enum):
+            a = 1
+
+        @pyckson
+        class Bar:
+            def __init__(self, foo: Foo):
+                self.foo = foo
+
+        result = parse(Bar, {'foo': 'A'})
+
+        self.assertEqual(result.foo, Foo.a)

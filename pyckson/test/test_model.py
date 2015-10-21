@@ -29,15 +29,6 @@ class PycksonAttributeTest(TestCase):
         self.assertEqual(attribute.attr_type, int)
         self.assertEqual(attribute.optional, True)
 
-    def test_should_consider_other_default_values_as_mandatory(self):
-        parameter = Parameter('foo', Parameter.POSITIONAL_OR_KEYWORD, annotation=int, default=0)
-
-        attribute = PycksonModelBuilder(DummyClass).build_attribute(parameter)
-
-        self.assertEqual(attribute.python_name, 'foo')
-        self.assertEqual(attribute.attr_type, int)
-        self.assertEqual(attribute.optional, False)
-
     def test_should_camel_case_name(self):
         parameter = Parameter('foo_bar', Parameter.POSITIONAL_OR_KEYWORD, annotation=int)
 
