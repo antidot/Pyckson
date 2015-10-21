@@ -15,16 +15,10 @@ def dumps(obj, **kwargs):
 
 
 def load(cls, fp, **kwargs):
-    def hook(obj):
-        return parse(cls, obj)
-
-    kwargs['object_hook'] = hook
-    return json.load(fp, **kwargs)
+    json_obj = json.load(fp, **kwargs)
+    return parse(cls, json_obj)
 
 
 def loads(cls, s, **kwargs):
-    def hook(obj):
-        return parse(cls, obj)
-
-    kwargs['object_hook'] = hook
-    return json.loads(s, **kwargs)
+    json_obj = json.loads(s, **kwargs)
+    return parse(cls, json_obj)
