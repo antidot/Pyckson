@@ -1,6 +1,6 @@
 from enum import Enum
 
-from pyckson.const import BASIC_TYPES
+from pyckson.const import BASIC_TYPES, LIST_TYPES
 from pyckson.helpers import get_model
 from pyckson.model import ListType
 
@@ -22,7 +22,7 @@ def serialize_class(obj):
             continue
         elif value is None:
             raise ValueError('attribute {} of {} is None but not marked as optional'.format(attribute.python_name, obj))
-        elif type(attribute.attr_type) is ListType:
+        elif type(attribute.attr_type) in LIST_TYPES:
             result[attribute.json_name] = serialize_list(attribute.attr_type.sub_type, value)
         else:
             result[attribute.json_name] = serialize(value)

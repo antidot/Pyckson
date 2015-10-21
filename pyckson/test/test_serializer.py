@@ -56,3 +56,19 @@ class SerializerTest(TestCase):
         result = serialize(Foo([]))
 
         self.assertEqual(result, {'bar': []})
+
+    def test_should_serialize_list_with_unresolved_type(self):
+        @pyckson
+        class Bar:
+            def __init__(self, x: str):
+                self.x = x
+
+        @pyckson
+        @listtype('bar', Bar)
+        class Foo:
+            def __init__(self, bar: list):
+                self.bar = bar
+
+        result = serialize(Foo([Bar('y')]))
+
+        self.assertEqual(result, {'bar': [{'x': 'y'}]})
