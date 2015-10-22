@@ -2,7 +2,7 @@ import re
 
 from pyckson.enum import EnumParser, DefaultEnumParser
 from pyckson.model import PycksonModel
-from pyckson.const import PYCKSON_ATTR, PYCKSON_MODEL, PYCKSON_ENUM_PARSER
+from pyckson.const import PYCKSON_ATTR, PYCKSON_MODEL, PYCKSON_ENUM_PARSER, BASIC_TYPES
 
 
 def is_pyckson(obj_type):
@@ -25,3 +25,10 @@ def get_enum_parser(obj_or_class) -> EnumParser:
     if not hasattr(obj_or_class, PYCKSON_ENUM_PARSER):
         return DefaultEnumParser(obj_or_class)
     return getattr(obj_or_class, PYCKSON_ENUM_PARSER)
+
+
+def is_base_type(obj):
+    for btype in BASIC_TYPES:
+        if isinstance(obj, btype):
+            return True
+    return False

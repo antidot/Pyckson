@@ -72,3 +72,16 @@ class SerializerTest(TestCase):
         result = serialize(Foo([Bar('y')]))
 
         self.assertEqual(result, {'bar': [{'x': 'y'}]})
+
+    def test_with_unicode(self):
+        class FakeString(str):
+            pass
+
+        @pyckson
+        class Foo:
+            def __init__(self, x: str):
+                self.x = x
+
+        result = serialize(Foo(FakeString('foo')))
+
+        self.assertEqual(result, {'x': 'foo'})

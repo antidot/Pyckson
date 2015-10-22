@@ -1,7 +1,7 @@
 from enum import Enum
 
 from pyckson.const import BASIC_TYPES, LIST_TYPES
-from pyckson.helpers import get_model
+from pyckson.helpers import get_model, is_base_type
 
 
 def serialize_enum(cls, value):
@@ -34,7 +34,7 @@ def serialize_class(obj):
 
 
 def serialize(obj):
-    if obj.__class__ in BASIC_TYPES:
+    if is_base_type(obj):
         return obj
     elif issubclass(obj.__class__, Enum):
         return serialize_enum(obj.__class__, obj)
