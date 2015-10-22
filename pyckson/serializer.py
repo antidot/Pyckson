@@ -2,7 +2,6 @@ from enum import Enum
 
 from pyckson.const import BASIC_TYPES, LIST_TYPES
 from pyckson.helpers import get_model
-from pyckson.model import ListType
 
 
 def serialize_enum(cls, value):
@@ -25,7 +24,12 @@ def serialize_class(obj):
         elif type(attribute.attr_type) in LIST_TYPES:
             result[attribute.json_name] = serialize_list(attribute.attr_type.sub_type, value)
         else:
-            result[attribute.json_name] = serialize(value)
+            try:
+                result[attribute.json_name] = serialize(value)
+            except ValueError:
+                raise ValueError('could not serialize field {} of {}, expected {}'.format(attribute.python_name,
+                                                                                          obj.__class__.__name__,
+                                                                                          attribute.attr_type.__name__))
     return result
 
 
