@@ -1,7 +1,8 @@
+from datetime import datetime
 from unittest import TestCase
 
-from pyckson.serializer import serialize
 from pyckson.decorators import pyckson, listtype
+from pyckson.serializer import serialize
 
 
 class SerializerTest(TestCase):
@@ -85,3 +86,25 @@ class SerializerTest(TestCase):
         result = serialize(Foo(FakeString('foo')))
 
         self.assertEqual(result, {'x': 'foo'})
+
+    def test_with_date(self):
+        @pyckson
+        class Foo:
+            def __init__(self, x: datetime):
+                self.x = x
+
+        date = datetime(2016, 2, 18, 10, 59, 0)
+        result = serialize(Foo(date))
+
+        self.assertEqual(result, {'x': date})
+
+    def test_with_bytes(self):
+        @pyckson
+        class Foo:
+            def __init__(self, x: bytes):
+                self.x = x
+
+        data = b"bar"
+        result = serialize(Foo(data))
+
+        self.assertEqual(result, {'x': data})

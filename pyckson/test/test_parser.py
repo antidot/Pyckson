@@ -1,8 +1,9 @@
+from datetime import datetime
 from enum import Enum
 from unittest import TestCase
 
-from pyckson.parser import parse
 from pyckson.decorators import pyckson, listtype, caseinsensitive
+from pyckson.parser import parse
 
 
 class ParserTest(TestCase):
@@ -30,7 +31,7 @@ class ParserTest(TestCase):
     def test_class_with_optional_attribute(self):
         @pyckson
         class Foo:
-            def __init__(self, a: int, b: str=None):
+            def __init__(self, a: int, b: str = None):
                 self.a = a
                 self.b = b
 
@@ -61,3 +62,25 @@ class ParserTest(TestCase):
         result = parse(Bar, {'foo': 'A'})
 
         self.assertEqual(result.foo, Foo.a)
+
+    def test_with_date(self):
+        @pyckson
+        class Foo:
+            def __init__(self, x: datetime):
+                self.x = x
+
+        date = datetime(2016, 2, 18, 10, 59, 0)
+        result = parse(Foo, {'x': date})
+
+        self.assertEqual(result.x, date)
+
+    def test_with_bytes(self):
+        @pyckson
+        class Foo:
+            def __init__(self, x: bytes):
+                self.x = x
+
+        data = b"bar"
+        result = parse(Foo, {'x': data})
+
+        self.assertEqual(result.x, data)
