@@ -1,8 +1,8 @@
 import re
 
+from pyckson.const import PYCKSON_ATTR, PYCKSON_MODEL, PYCKSON_ENUM_PARSER, BASIC_TYPES, PYCKSON_NAMERULE
 from pyckson.enum import EnumParser, DefaultEnumParser
 from pyckson.model import PycksonModel
-from pyckson.const import PYCKSON_ATTR, PYCKSON_MODEL, PYCKSON_ENUM_PARSER, BASIC_TYPES
 
 
 def is_pyckson(obj_type):
@@ -17,8 +17,26 @@ def get_model(obj_or_class) -> PycksonModel:
     return getattr(obj_or_class, PYCKSON_MODEL)
 
 
+def name_by_dict(name_mapping, default_rule):
+    def name_function(python_name):
+        if python_name in name_mapping:
+            return name_mapping[python_name]
+        else:
+            return default_rule(python_name)
+
+    return name_function
+
+
 def camel_case_name(python_name):
     return re.sub('_([a-z])', lambda match: match.group(1).upper(), python_name)
+
+
+def same_name(python_name):
+    return python_name
+
+
+def get_name_rule(obj_type):
+    return getattr(obj_type, PYCKSON_NAMERULE, camel_case_name)
 
 
 def get_enum_parser(obj_or_class) -> EnumParser:

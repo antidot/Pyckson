@@ -1,9 +1,9 @@
-from inspect import Parameter, getmembers, signature
 import sys
+from inspect import Parameter, getmembers, signature
 
 from pyckson.const import PYCKSON_TYPEINFO
+from pyckson.helpers import get_name_rule
 from pyckson.model import ListType, PycksonAttribute, PycksonModel, PycksonUnresolvedAttribute, UnresolvedListType
-from pyckson.helpers import camel_case_name
 
 
 def type_provider(cls, name):
@@ -20,6 +20,7 @@ class PycksonModelBuilder:
     def __init__(self, cls):
         self.cls = cls
         self.type_info = getattr(cls, PYCKSON_TYPEINFO, dict())
+        self.name_rule = get_name_rule(cls)
 
     def find_constructor(self):
         for member in getmembers(self.cls):
@@ -38,7 +39,7 @@ class PycksonModelBuilder:
         return PycksonModel(attributes)
 
     def build_attribute(self, parameter: Parameter) -> PycksonAttribute:
-        json_name = camel_case_name(parameter.name)
+        json_name = self.name_rule(parameter.name)
         optional = parameter.default is not Parameter.empty
         if parameter.annotation is Parameter.empty:
             raise TypeError('parameter {} in class {} has no type'.format(parameter.name, self.cls.__name__))
