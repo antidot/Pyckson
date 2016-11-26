@@ -61,6 +61,10 @@ displays
 Bar(Foo(foo), [1, 2, 3])
 ```
 
+## Documentation
+
+Documentation is available at <http://pyckson.readthedocs.io/en/latest/>
+
 ## Contact
 
 opensource@antidot.net

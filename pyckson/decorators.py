@@ -24,6 +24,7 @@ def pyckson(cls):
 
 
 def caseinsensitive(cls):
+    """Annotation function to set an Enum to be case insensitive on parsing"""
     if not issubclass(cls, Enum):
         raise TypeError('caseinsensitive decorator can only be applied to subclasses of enum.Enum')
     enum_options = getattr(cls, PYCKSON_ENUM_OPTIONS, {})
