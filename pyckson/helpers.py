@@ -1,20 +1,11 @@
 import re
 import sys
 
-from pyckson.const import PYCKSON_ATTR, PYCKSON_MODEL, BASIC_TYPES, PYCKSON_NAMERULE
-from pyckson.model import PycksonModel
+from pyckson.const import PYCKSON_ATTR, BASIC_TYPES, PYCKSON_NAMERULE
 
 
 def is_pyckson(obj_type):
     return getattr(obj_type, PYCKSON_ATTR, False)
-
-
-def get_model(obj_or_class) -> PycksonModel:
-    if type(obj_or_class) is not type:
-        return get_model(obj_or_class.__class__)
-    if not is_pyckson(obj_or_class):
-        raise ValueError('{} has no pyckson info'.format(obj_or_class))
-    return getattr(obj_or_class, PYCKSON_MODEL)
 
 
 def name_by_dict(name_mapping, default_rule):

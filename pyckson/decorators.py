@@ -1,9 +1,9 @@
 from enum import Enum
 
-from pyckson.builders import PycksonModelBuilder
-from pyckson.const import PYCKSON_TYPEINFO, PYCKSON_ATTR, PYCKSON_MODEL, PYCKSON_NAMERULE, PYCKSON_ENUM_OPTIONS, \
+from pyckson.const import PYCKSON_TYPEINFO, PYCKSON_NAMERULE, PYCKSON_ENUM_OPTIONS, \
     ENUM_CASE_INSENSITIVE
 from pyckson.helpers import same_name, name_by_dict, get_name_rule
+from pyckson.model.helpers import ModelProviderImpl
 from pyckson.parser import parse
 
 
@@ -18,9 +18,7 @@ def listtype(param_name, param_sub_type):
 
 
 def pyckson(cls):
-    setattr(cls, PYCKSON_ATTR, True)
-    model = PycksonModelBuilder(cls).build_model()
-    setattr(cls, PYCKSON_MODEL, model)
+    ModelProviderImpl().get_or_build(cls)
     setattr(cls, 'parse', lambda json: parse(cls, json))
     return cls
 

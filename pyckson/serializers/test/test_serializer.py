@@ -133,3 +133,12 @@ class SerializerTest(TestCase):
         result = serialize(Foo(data))
 
         self.assertEqual(result, {'x': data})
+
+    def test_without_annotation(self):
+        class Foo:
+            def __init__(self, bar: List[str]):
+                self.bar = bar
+
+        result = serialize(Foo(['a', 'b']))
+
+        self.assertEqual(result, {'bar': ['a', 'b']})
