@@ -19,40 +19,18 @@ class UnresolvedListType:
 
 
 class PycksonAttribute:
-    def __init__(self, python_name, json_name, attr_type, optional=False, inline=False):
+    def __init__(self, python_name: str, json_name: str, attr_type, optional: bool, serializer, parser):
         self.python_name = python_name
         self.json_name = json_name
         self.attr_type = attr_type
         self.optional = optional
-        self.inline = inline
+        self.serializer = serializer
+        self.parser = parser
 
     def __repr__(self):
-        return 'PycksonAttribute({}, {}, {}, {}, {})'.format(self.python_name,
-                                                             self.json_name,
-                                                             self.attr_type,
-                                                             self.optional,
-                                                             self.inline)
-
-
-class PycksonUnresolvedAttribute:
-    def __init__(self, python_name, json_name, type_provider, optional=False, inline=False):
-        self.python_name = python_name
-        self.json_name = json_name
-        self.type_provider = type_provider
-        self.optional = optional
-        self.inline = inline
-
-    @property
-    def attr_type(self):
-        return self.type_provider()
-
-    def __repr__(self):
-        return 'PycksonUnresolvedAttribute({}, {}, {}, {}, {})'.format(self.python_name,
-                                                                       self.json_name,
-                                                                       self.attr_type,
-                                                                       self.optional,
-                                                                       self.inline)
-
+        return 'PycksonAttribute({}, {}, {}'.format(self.python_name,
+                                                    self.json_name,
+                                                    self.attr_type)
 
 class PycksonModel:
     def __init__(self, attributes):

@@ -1,7 +1,7 @@
 from enum import Enum
 from unittest import TestCase
 
-from pyckson.enums import DefaultEnumParser, CaseInsensitiveParser
+from pyckson.parser import DefaultEnumParser, CaseInsensitiveEnumParser
 
 
 class MyEnum(Enum):
@@ -35,7 +35,7 @@ class MyInsensitiveEnum(Enum):
 
 class CaseInsensitiveEnumParserTest(TestCase):
     def setUp(self):
-        self.parser = CaseInsensitiveParser(MyInsensitiveEnum)
+        self.parser = CaseInsensitiveEnumParser(MyInsensitiveEnum)
 
     def test_should_parse_value_in_enum(self):
         self.assertEqual(self.parser.parse('a'), MyInsensitiveEnum.a)

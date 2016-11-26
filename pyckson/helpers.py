@@ -1,7 +1,7 @@
 import re
+import sys
 
-from pyckson.const import PYCKSON_ATTR, PYCKSON_MODEL, PYCKSON_ENUM_PARSER, BASIC_TYPES, PYCKSON_NAMERULE
-from pyckson.enums import EnumParser, DefaultEnumParser
+from pyckson.const import PYCKSON_ATTR, PYCKSON_MODEL, BASIC_TYPES, PYCKSON_NAMERULE
 from pyckson.model import PycksonModel
 
 
@@ -39,14 +39,20 @@ def get_name_rule(obj_type):
     return getattr(obj_type, PYCKSON_NAMERULE, camel_case_name)
 
 
-def get_enum_parser(obj_or_class) -> EnumParser:
-    if not hasattr(obj_or_class, PYCKSON_ENUM_PARSER):
-        return DefaultEnumParser(obj_or_class)
-    return getattr(obj_or_class, PYCKSON_ENUM_PARSER)
-
-
 def is_base_type(obj):
     for btype in BASIC_TYPES:
         if isinstance(obj, btype):
             return True
     return False
+
+
+class TypeProvider:
+    def __init__(self, cls, name):
+        self.cls = cls
+        self.name = name
+
+    def get(self):
+        try:
+            return getattr(sys.modules[self.cls.__module__], self.name)
+        except AttributeError:
+            raise TypeError('could not resolve string annotation {} in class {}'.format(self.name, self.cls.__name__))

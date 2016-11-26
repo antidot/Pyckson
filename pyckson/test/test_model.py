@@ -4,6 +4,7 @@ from unittest import TestCase
 from pyckson import listtype
 from pyckson.builders import PycksonModelBuilder
 from pyckson.model import ListType
+from pyckson.parser import ListParser, BasicParser
 
 
 class DummyClass:
@@ -82,8 +83,8 @@ class PycksonAttributeTest(TestCase):
 
         attribute = PycksonModelBuilder(ListDummyClass).build_attribute(parameter)
 
-        self.assertEqual(type(attribute.attr_type), ListType)
-        self.assertEqual(attribute.attr_type.sub_type, int)
+        self.assertEqual(type(attribute.parser), ListParser)
+        self.assertEqual(type(attribute.parser.sub_parser), BasicParser)
 
 
 class PycksonModelTest(TestCase):
