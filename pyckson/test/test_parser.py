@@ -1,5 +1,6 @@
 from datetime import datetime
 from enum import Enum
+from typing import List
 from unittest import TestCase
 
 from pyckson.decorators import pyckson, listtype, caseinsensitive
@@ -27,6 +28,32 @@ class ParserTest(TestCase):
         result = parse(Foo, {'bar': ['a', 'b']})
 
         self.assertListEqual(result.bar, ['a', 'b'])
+
+    def test_class_with_generic_list(self):
+        @pyckson
+        class Foo:
+            def __init__(self, bar: List[str]):
+                self.bar = bar
+
+        result = parse(Foo, {'bar': ['a', 'b']})
+        self.assertListEqual(result.bar, ['a', 'b'])
+
+    def test_class_with_generic_object_list(self):
+        @pyckson
+        class Bar:
+            def __init__(self, x: str):
+                self.x = x
+
+            def __eq__(self, other):
+                return self.x == other.x
+
+        @pyckson
+        class Foo:
+            def __init__(self, bar: List[Bar]):
+                self.bar = bar
+
+        result = parse(Foo, {'bar': [{'x': 'a'}, {'x': 'b'}]})
+        self.assertListEqual(result.bar, [Bar('a'), Bar('b')])
 
     def test_class_with_optional_attribute(self):
         @pyckson

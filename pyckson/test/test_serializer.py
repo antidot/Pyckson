@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List
 from unittest import TestCase
 
 from pyckson.decorators import pyckson, listtype
@@ -27,10 +28,34 @@ class SerializerTest(TestCase):
 
         self.assertEqual(result, {'bar': ['a', 'b']})
 
+    def test_class_with_generic_list(self):
+        @pyckson
+        class Foo:
+            def __init__(self, bar: List[str]):
+                self.bar = bar
+
+        result = serialize(Foo(['a', 'b']))
+        self.assertEqual(result, {'bar': ['a', 'b']})
+
+    def test_class_with_generic_object_list(self):
+        @pyckson
+        class Bar:
+            def __init__(self, x: str):
+                self.x = x
+
+        @pyckson
+        class Foo:
+            def __init__(self, bar: List[Bar]):
+                self.bar = bar
+
+        result = serialize(Foo([Bar('a'), Bar('b')]))
+
+        self.assertEqual(result, {'bar': [{'x': 'a'}, {'x': 'b'}]})
+
     def test_class_with_optional_attribute(self):
         @pyckson
         class Foo:
-            def __init__(self, a: int, b:str=None):
+            def __init__(self, a: int, b: str = None):
                 self.a = a
                 self.b = b
 

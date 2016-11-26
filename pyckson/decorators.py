@@ -1,8 +1,8 @@
 from enum import Enum
 
 from pyckson.builders import PycksonModelBuilder
-from pyckson.const import PYCKSON_TYPEINFO, PYCKSON_ATTR, PYCKSON_MODEL, PYCKSON_ENUM_PARSER, PYCKSON_NAMERULE
-from pyckson.enum import CaseInsensitiveParser
+from pyckson.const import PYCKSON_TYPEINFO, PYCKSON_ATTR, PYCKSON_MODEL, PYCKSON_NAMERULE, PYCKSON_ENUM_OPTIONS, \
+    ENUM_CASE_INSENSITIVE
 from pyckson.helpers import same_name, name_by_dict, get_name_rule
 from pyckson.parser import parse
 
@@ -28,7 +28,9 @@ def pyckson(cls):
 def caseinsensitive(cls):
     if not issubclass(cls, Enum):
         raise TypeError('caseinsensitive decorator can only be applied to subclasses of enum.Enum')
-    setattr(cls, PYCKSON_ENUM_PARSER, CaseInsensitiveParser(cls))
+    enum_options = getattr(cls, PYCKSON_ENUM_OPTIONS, {})
+    enum_options[ENUM_CASE_INSENSITIVE] = True
+    setattr(cls, PYCKSON_ENUM_OPTIONS, enum_options)
     return cls
 
 

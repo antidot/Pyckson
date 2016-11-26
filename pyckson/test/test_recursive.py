@@ -1,22 +1,28 @@
 from unittest import TestCase
-from pyckson import pyckson, serialize
 
+from pyckson import parse
+from pyckson import pyckson, serialize
 from pyckson.builders import PycksonModelBuilder
 
 
+@pyckson
 class Foo:
-    def __init__(self, foo: 'Foo'):
-        pass
+    def __init__(self, x: str, foo: 'Foo' = None):
+        self.x = x
+        self.foo = foo
 
 
+@pyckson
 class Bar:
-    def __init__(self, quz: 'Quz'):
-        pass
+    def __init__(self, quz: 'Quz' = None):
+        self.quz = quz
 
 
+@pyckson
 class Quz:
-    def __init__(self, bar: 'Bar'):
-        pass
+    def __init__(self, x: str, bar: Bar = None):
+        self.x = x
+        self.bar = bar
 
 
 @pyckson
@@ -27,16 +33,18 @@ class Fail:
 
 class TestForwardDeclarations(TestCase):
     def test_should_parse_recursive(self):
-        model = PycksonModelBuilder(Foo).build_model()
-        self.assertEqual(model.get_attribute(python_name='foo').attr_type, Foo)
+        result = parse(Foo, {'x': 'a', 'foo': {'x': 'b', 'foo': {'x': 'c'}}})
+        self.assertEqual(result.x, 'a')
+        self.assertEqual(result.foo.x, 'b')
+        self.assertEqual(result.foo.foo.x, 'c')
+        self.assertIsNone(result.foo.foo.foo)
 
     def test_should_parse_indirect_recursive(self):
-        model = PycksonModelBuilder(Bar).build_model()
-        self.assertEqual(model.get_attribute(python_name='quz').attr_type, Quz)
-
-        model = PycksonModelBuilder(Quz).build_model()
-        self.assertEqual(model.get_attribute(python_name='bar').attr_type, Bar)
+        result = parse(Bar, {'quz': {'x': 'a', 'bar': {'quz': {'x': 'b'}}}})
+        self.assertEqual(result.quz.x, 'a')
+        self.assertEqual(result.quz.bar.quz.x, 'b')
+        self.assertIsNone(result.quz.bar.quz.bar)
 
     def test_should_raise_error_on_unresolvedtype(self):
         with self.assertRaises(TypeError):
-            serialize(Fail('toto'))
+            parse(Fail('toto'))
