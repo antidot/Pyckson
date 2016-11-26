@@ -2,14 +2,15 @@ from inspect import Parameter, getmembers, signature
 
 from pyckson.const import PYCKSON_TYPEINFO
 from pyckson.helpers import get_name_rule
-from pyckson.model import PycksonAttribute, PycksonModel
-from pyckson.parser import get_parser
-from pyckson.serializer import get_serializer
+from pyckson.model.model import PycksonModel, PycksonAttribute
+from pyckson.providers import SerializerProvider, ParserProvider
 
 
 class PycksonModelBuilder:
-    def __init__(self, cls):
+    def __init__(self, cls, serializer_provider: SerializerProvider, parser_provider: ParserProvider):
         self.cls = cls
+        self.serializer_provider = serializer_provider
+        self.parser_provider = parser_provider
         self.type_info = getattr(cls, PYCKSON_TYPEINFO, dict())
         self.name_rule = get_name_rule(cls)
 
@@ -38,5 +39,5 @@ class PycksonModelBuilder:
         if parameter.kind != Parameter.POSITIONAL_OR_KEYWORD:
             raise TypeError('pyckson only handle named parameters')
         return PycksonAttribute(python_name, json_name, parameter.annotation, optional,
-                                get_serializer(parameter.annotation, self.cls, python_name),
-                                get_parser(parameter.annotation, self.cls, python_name))
+                                self.serializer_provider.get(parameter.annotation, self.cls, python_name),
+                                self.parser_provider.get(parameter.annotation, self.cls, python_name))
