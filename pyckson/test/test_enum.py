@@ -1,7 +1,7 @@
 from enum import Enum
 from unittest import TestCase
 
-from pyckson.enum import DefaultEnumParser, CaseInsensitiveParser
+from pyckson.enums import DefaultEnumParser, CaseInsensitiveParser
 
 
 class MyEnum(Enum):

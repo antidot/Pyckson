@@ -2,7 +2,7 @@ from enum import Enum
 
 from pyckson.builders import PycksonModelBuilder
 from pyckson.const import PYCKSON_TYPEINFO, PYCKSON_ATTR, PYCKSON_MODEL, PYCKSON_ENUM_PARSER, PYCKSON_NAMERULE
-from pyckson.enum import CaseInsensitiveParser
+from pyckson.enums import CaseInsensitiveParser
 from pyckson.helpers import same_name, name_by_dict, get_name_rule
 from pyckson.parser import parse
 

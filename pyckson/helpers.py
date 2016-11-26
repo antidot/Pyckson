@@ -1,7 +1,7 @@
 import re
 
 from pyckson.const import PYCKSON_ATTR, PYCKSON_MODEL, PYCKSON_ENUM_PARSER, BASIC_TYPES, PYCKSON_NAMERULE
-from pyckson.enum import EnumParser, DefaultEnumParser
+from pyckson.enums import EnumParser, DefaultEnumParser
 from pyckson.model import PycksonModel
 
 
