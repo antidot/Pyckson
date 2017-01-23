@@ -1,6 +1,7 @@
+from typing import List
 from unittest import TestCase
 
-from pyckson import parse
+from pyckson import parse, serialize
 from pyckson import pyckson
 
 
@@ -30,6 +31,16 @@ class Fail:
         self.bar = bar
 
 
+class ClsWithForwardList:
+    def __init__(self, x: List['ForwardListType']):
+        self.x = x
+
+
+class ForwardListType:
+    def __init__(self, y: int):
+        self.y = y
+
+
 class TestForwardDeclarations(TestCase):
     def test_should_parse_recursive(self):
         result = parse(Foo, {'x': 'a', 'foo': {'x': 'b', 'foo': {'x': 'c'}}})
@@ -46,4 +57,14 @@ class TestForwardDeclarations(TestCase):
 
     def test_should_raise_error_on_unresolvedtype(self):
         with self.assertRaises(TypeError):
-            parse(Fail('toto'))
+            parse(Fail, {'bar': 1})
+
+    def test_should_parse_class_with_forwarf_list(self):
+        result = parse(ClsWithForwardList, {'x': [{'y': 1}, {'y': 2}]})
+        self.assertEqual(result.x[0].y, 1)
+        self.assertEqual(result.x[1].y, 2)
+
+    def test_should_serialize_class_with_forwarf_list(self):
+        result = serialize(ClsWithForwardList([ForwardListType(1), ForwardListType(2)]))
+
+        self.assertEqual(result, {'x': [{'y': 1}, {'y': 2}]})

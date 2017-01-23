@@ -1,5 +1,6 @@
 import re
 import sys
+from typing import _ForwardRef
 
 from pyckson.const import PYCKSON_ATTR, BASIC_TYPES, PYCKSON_NAMERULE
 
@@ -40,7 +41,7 @@ def is_base_type(obj):
 class TypeProvider:
     def __init__(self, cls, name):
         self.cls = cls
-        self.name = name
+        self.name = name.__forward_arg__ if type(name) is _ForwardRef else name
 
     def get(self):
         try:

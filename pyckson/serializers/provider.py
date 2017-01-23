@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List
+from typing import List, _ForwardRef
 
 from pyckson.const import BASIC_TYPES, PYCKSON_TYPEINFO
 from pyckson.providers import SerializerProvider, ModelProvider
@@ -14,7 +14,7 @@ class SerializerProviderImpl(SerializerProvider):
     def get(self, obj_type, parent_class, name_in_parent) -> Serializer:
         if obj_type in BASIC_TYPES:
             return BasicSerializer()
-        if type(obj_type) is str:
+        if type(obj_type) is str or  type(obj_type) is _ForwardRef:
             return GenericSerializer(self.model_provider)
         if obj_type is list:
             type_info = getattr(parent_class, PYCKSON_TYPEINFO, dict())

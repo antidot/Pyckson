@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List
+from typing import List, _ForwardRef
 
 from pyckson.const import BASIC_TYPES, PYCKSON_TYPEINFO, PYCKSON_ENUM_OPTIONS, ENUM_CASE_INSENSITIVE
 from pyckson.helpers import TypeProvider
@@ -15,7 +15,7 @@ class ParserProviderImpl(ParserProvider):
     def get(self, obj_type, parent_class, name_in_parent) -> Parser:
         if obj_type in BASIC_TYPES:
             return BasicParser()
-        if type(obj_type) is str:
+        if type(obj_type) is str or type(obj_type) is _ForwardRef:
             return UnresolvedParser(TypeProvider(parent_class, obj_type), self.model_provider)
         if obj_type is list:
             type_info = getattr(parent_class, PYCKSON_TYPEINFO, dict())
