@@ -7,5 +7,5 @@ python:
 # command to run tests
 install:
   - if [[ $TRAVIS_PYTHON_VERSION == '3.3' ]]; then pip install enum34; fi
-  - if [[ $TRAVIS_PYTHON_VERSION != '3.5' ]]; then pip install typing; fi
+  - if [[ $TRAVIS_PYTHON_VERSION == '3.3' || $TRAVIS_PYTHON_VERSION == '3.4' ]]; then pip install typing; fi
 script: nosetests
