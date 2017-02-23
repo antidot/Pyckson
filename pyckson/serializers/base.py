@@ -19,3 +19,8 @@ class ListSerializer(Serializer):
 class EnumSerializer(Serializer):
     def serialize(self, obj):
         return obj.name
+
+
+class DictSerializer(Serializer):
+    def serialize(self, obj):
+        return obj

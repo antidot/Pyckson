@@ -1,10 +1,11 @@
 from enum import Enum
-from typing import List, _ForwardRef
+from typing import List, _ForwardRef, Dict
 
 from pyckson.const import BASIC_TYPES, PYCKSON_TYPEINFO, PYCKSON_ENUM_OPTIONS, ENUM_CASE_INSENSITIVE
 from pyckson.helpers import TypeProvider
 from pyckson.parsers.advanced import UnresolvedParser, ClassParser
-from pyckson.parsers.base import Parser, BasicParser, ListParser, CaseInsensitiveEnumParser, DefaultEnumParser
+from pyckson.parsers.base import Parser, BasicParser, ListParser, CaseInsensitiveEnumParser, DefaultEnumParser, \
+    DictParser
 from pyckson.providers import ParserProvider, ModelProvider
 
 
@@ -33,4 +34,6 @@ class ParserProviderImpl(ParserProvider):
                 return CaseInsensitiveEnumParser(obj_type)
             else:
                 return DefaultEnumParser(obj_type)
+        if issubclass(obj_type, Dict) or issubclass(obj_type, dict):
+            return DictParser()
         return ClassParser(obj_type, self.model_provider)

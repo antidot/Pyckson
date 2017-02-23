@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List
+from typing import List, Dict
 from unittest import TestCase
 
 from pyckson.decorators import pyckson, listtype
@@ -142,3 +142,21 @@ class SerializerTest(TestCase):
         result = serialize(Foo(['a', 'b']))
 
         self.assertEqual(result, {'bar': ['a', 'b']})
+
+    def test_serialize_dict(self):
+        class Foo:
+            def __init__(self, foo: Dict[str, int]):
+                self.foo = foo
+
+        result = serialize(Foo({'a': 1, 'b': 2}))
+
+        self.assertEqual(result, {'foo': {'a': 1, 'b': 2}})
+
+    def test_serialize_old_dict(self):
+        class Foo:
+            def __init__(self, foo: dict):
+                self.foo = foo
+
+        result = serialize(Foo({'a': 1, 'b': 2}))
+
+        self.assertEqual(result, {'foo': {'a': 1, 'b': 2}})

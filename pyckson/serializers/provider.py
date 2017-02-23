@@ -1,10 +1,10 @@
 from enum import Enum
-from typing import List, _ForwardRef
+from typing import List, _ForwardRef, Dict
 
 from pyckson.const import BASIC_TYPES, PYCKSON_TYPEINFO
 from pyckson.providers import SerializerProvider, ModelProvider
 from pyckson.serializers.advanced import ClassSerializer, GenericSerializer
-from pyckson.serializers.base import BasicSerializer, ListSerializer, EnumSerializer, Serializer
+from pyckson.serializers.base import BasicSerializer, ListSerializer, EnumSerializer, Serializer, DictSerializer
 
 
 class SerializerProviderImpl(SerializerProvider):
@@ -28,4 +28,6 @@ class SerializerProviderImpl(SerializerProvider):
             return ListSerializer(self.get(obj_type.__args__[0], parent_class, name_in_parent))
         if issubclass(obj_type, Enum):
             return EnumSerializer()
+        if issubclass(obj_type, Dict) or issubclass(obj_type, dict):
+            return DictSerializer()
         return ClassSerializer(self.model_provider)

@@ -30,3 +30,8 @@ class CaseInsensitiveEnumParser(Parser):
 
     def parse(self, value):
         return self.values[value.lower()]
+
+
+class DictParser(Parser):
+    def parse(self, json_value):
+        return json_value
