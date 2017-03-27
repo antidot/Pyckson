@@ -1,5 +1,6 @@
 from datetime import datetime
 from enum import Enum
+
 from typing import List, Dict
 from unittest import TestCase
 
@@ -140,3 +141,12 @@ class ParserTest(TestCase):
 
         self.assertEqual(result.foo['a'], 1)
         self.assertEqual(result.foo['b'], 2)
+
+    def test_parse_double_list(self):
+        class Foo:
+            def __init__(self, bar: List[List[str]]):
+                self.bar = bar
+
+        result = parse(Foo, {'bar': [['a', 'b'], ['c']]})
+
+        self.assertListEqual(result.bar, [['a', 'b'], ['c']])

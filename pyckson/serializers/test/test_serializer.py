@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from typing import List, Dict
 from unittest import TestCase
 
@@ -160,3 +161,12 @@ class SerializerTest(TestCase):
         result = serialize(Foo({'a': 1, 'b': 2}))
 
         self.assertEqual(result, {'foo': {'a': 1, 'b': 2}})
+
+    def test_serialize_double_list(self):
+        class Foo:
+            def __init__(self, bar: List[List[str]]):
+                self.bar = bar
+
+        result = serialize(Foo([['a', 'b'], ['c']]))
+
+        self.assertEqual(result, {'bar': [['a', 'b'], ['c']]})
