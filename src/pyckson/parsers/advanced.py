@@ -1,3 +1,4 @@
+from pyckson.const import PYCKSON_PARSER
 from pyckson.helpers import TypeProvider, is_base_type
 from pyckson.parsers.base import Parser, BasicParser
 from pyckson.providers import ModelProvider
@@ -11,6 +12,8 @@ class GenericParser(Parser):
     def parse(self, json_value):
         if is_base_type(self.cls):
             return BasicParser().parse(json_value)
+        elif hasattr(self.cls, PYCKSON_PARSER):
+            return getattr(self.cls, PYCKSON_PARSER)().parse(json_value)
         else:
             return ClassParser(self.cls, self.model_provider).parse(json_value)
 

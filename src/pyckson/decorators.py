@@ -1,7 +1,7 @@
 from enum import Enum
 
 from pyckson.const import PYCKSON_TYPEINFO, PYCKSON_NAMERULE, PYCKSON_ENUM_OPTIONS, \
-    ENUM_CASE_INSENSITIVE
+    ENUM_CASE_INSENSITIVE, PYCKSON_SERIALIZER, PYCKSON_PARSER
 from pyckson.helpers import same_name, name_by_dict, get_name_rule
 from pyckson.model.helpers import ModelProviderImpl
 from pyckson.parser import parse
@@ -50,6 +50,22 @@ def rename(**kwargs):
     def class_decorator(cls):
         name_function = name_by_dict(kwargs, get_name_rule(cls))
         setattr(cls, PYCKSON_NAMERULE, name_function)
+        return cls
+
+    return class_decorator
+
+
+def serializer(serializer_cls):
+    def class_decorator(cls):
+        setattr(cls, PYCKSON_SERIALIZER, serializer_cls)
+        return cls
+
+    return class_decorator
+
+
+def parser(parser_cls):
+    def class_decorator(cls):
+        setattr(cls, PYCKSON_PARSER, parser_cls)
         return cls
 
     return class_decorator

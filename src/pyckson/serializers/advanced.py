@@ -1,3 +1,4 @@
+from pyckson.const import PYCKSON_SERIALIZER
 from pyckson.helpers import is_base_type
 from pyckson.providers import ModelProvider
 from pyckson.serializers.base import Serializer, BasicSerializer
@@ -10,6 +11,8 @@ class GenericSerializer(Serializer):
     def serialize(self, obj):
         if is_base_type(obj):
             return BasicSerializer().serialize(obj)
+        elif hasattr(obj.__class__, PYCKSON_SERIALIZER):
+            return getattr(obj.__class__, PYCKSON_SERIALIZER)().serialize(obj)
         else:
             return ClassSerializer(self.model_provider).serialize(obj)
 

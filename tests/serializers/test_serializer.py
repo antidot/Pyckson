@@ -1,10 +1,10 @@
 from datetime import datetime
-
 from typing import List, Dict
 from unittest import TestCase
 
-from pyckson.decorators import pyckson, listtype
+from pyckson.decorators import pyckson, listtype, serializer
 from pyckson.serializer import serialize
+from pyckson.serializers.base import Serializer
 
 
 class SerializerTest(TestCase):
@@ -170,3 +170,37 @@ class SerializerTest(TestCase):
         result = serialize(Foo([['a', 'b'], ['c']]))
 
         self.assertEqual(result, {'bar': [['a', 'b'], ['c']]})
+
+    def test_custom_serializer(self):
+        class Foo:
+            def __init__(self, bar):
+                self.bar = bar
+
+        class FooSerializer(Serializer):
+            def serialize(self, obj: Foo) -> dict:
+                return {'toto': obj.bar}
+
+        serializer(FooSerializer)(Foo)
+
+        result = serialize(Foo(42))
+
+        self.assertEqual(result, {'toto': 42})
+
+    def test_custom_serializer_on_param(self):
+        class Bar:
+            def __init__(self):
+                pass
+
+        class BarSerializer(Serializer):
+            def serialize(self, obj: Bar):
+                return 42
+
+        class Foo:
+            def __init__(self, bar: Bar):
+                self.bar = bar
+
+        serializer(BarSerializer)(Bar)
+
+        result = serialize(Foo(Bar()))
+
+        self.assertEqual(result, {'bar': 42})

@@ -1,11 +1,11 @@
 from datetime import datetime
 from enum import Enum
-
 from typing import List, Dict
 from unittest import TestCase
 
-from pyckson.decorators import pyckson, listtype, caseinsensitive
+from pyckson.decorators import pyckson, listtype, caseinsensitive, parser
 from pyckson.parser import parse
+from pyckson.parsers.base import Parser
 
 
 class ParserTest(TestCase):
@@ -150,3 +150,37 @@ class ParserTest(TestCase):
         result = parse(Foo, {'bar': [['a', 'b'], ['c']]})
 
         self.assertListEqual(result.bar, [['a', 'b'], ['c']])
+
+    def test_custom_parser(self):
+        class Foo:
+            def __init__(self, bar):
+                self.bar = bar
+
+        class FooParser(Parser):
+            def parse(self, json_value) -> Foo:
+                return Foo(json_value['x'])
+
+        parser(FooParser)(Foo)
+
+        result = parse(Foo, {'x': 42})
+
+        self.assertEqual(result.bar, 42)
+
+    def test_custom_parser_on_param(self):
+        class Bar:
+            def __init__(self, x):
+                self.x = x
+
+        class BarParser(Parser):
+            def parse(self, json_value) -> Bar:
+                return Bar(42)
+
+        class Foo:
+            def __init__(self, bar: Bar):
+                self.bar = bar
+
+        parser(BarParser)(Bar)
+
+        result = parse(Foo, {'bar': {}})
+
+        self.assertEqual(result.bar.x, 42)
