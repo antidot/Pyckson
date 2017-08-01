@@ -3,7 +3,7 @@ from enum import Enum
 from typing import List, Dict
 from unittest import TestCase
 
-from pyckson.decorators import pyckson, listtype, caseinsensitive, parser
+from pyckson.decorators import pyckson, listtype, caseinsensitive, custom_parser
 from pyckson.parser import parse
 from pyckson.parsers.base import Parser
 
@@ -160,7 +160,7 @@ class ParserTest(TestCase):
             def parse(self, json_value) -> Foo:
                 return Foo(json_value['x'])
 
-        parser(FooParser)(Foo)
+        custom_parser(FooParser)(Foo)
 
         result = parse(Foo, {'x': 42})
 
@@ -179,7 +179,7 @@ class ParserTest(TestCase):
             def __init__(self, bar: Bar):
                 self.bar = bar
 
-        parser(BarParser)(Bar)
+        custom_parser(BarParser)(Bar)
 
         result = parse(Foo, {'bar': {}})
 

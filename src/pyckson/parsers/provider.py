@@ -3,7 +3,7 @@ from typing import List, _ForwardRef, Dict
 
 from pyckson.const import BASIC_TYPES, PYCKSON_TYPEINFO, PYCKSON_ENUM_OPTIONS, ENUM_CASE_INSENSITIVE, PYCKSON_PARSER
 from pyckson.helpers import TypeProvider
-from pyckson.parsers.advanced import UnresolvedParser, ClassParser
+from pyckson.parsers.advanced import UnresolvedParser, ClassParser, CustomDeferredParser
 from pyckson.parsers.base import Parser, BasicParser, ListParser, CaseInsensitiveEnumParser, DefaultEnumParser, \
     DictParser
 from pyckson.providers import ParserProvider, ModelProvider
@@ -17,7 +17,7 @@ class ParserProviderImpl(ParserProvider):
         if obj_type in BASIC_TYPES:
             return BasicParser()
         if hasattr(obj_type, PYCKSON_PARSER):
-            return getattr(obj_type, PYCKSON_PARSER)()
+            return CustomDeferredParser(obj_type)
         if type(obj_type) is str or type(obj_type) is _ForwardRef:
             return UnresolvedParser(TypeProvider(parent_class, obj_type), self.model_provider)
         if obj_type is list:

@@ -1,5 +1,5 @@
 from pyckson.const import PYCKSON_SERIALIZER
-from pyckson.helpers import is_base_type
+from pyckson.helpers import is_base_type, get_custom_serializer
 from pyckson.providers import ModelProvider
 from pyckson.serializers.base import Serializer, BasicSerializer
 
@@ -12,7 +12,7 @@ class GenericSerializer(Serializer):
         if is_base_type(obj):
             return BasicSerializer().serialize(obj)
         elif hasattr(obj.__class__, PYCKSON_SERIALIZER):
-            return getattr(obj.__class__, PYCKSON_SERIALIZER)().serialize(obj)
+            return get_custom_serializer(obj.__class__).serialize(obj)
         else:
             return ClassSerializer(self.model_provider).serialize(obj)
 
@@ -33,3 +33,11 @@ class ClassSerializer(Serializer):
                     'attribute {} of {} is None but not marked as optional'.format(attribute.python_name, obj))
             result[attribute.json_name] = attribute.serializer.serialize(value)
         return result
+
+
+class CustomDeferredSerializer(Serializer):
+    def __init__(self, cls):
+        self.cls = cls
+
+    def serialize(self, obj):
+        return get_custom_serializer(self.cls).serialize(obj)

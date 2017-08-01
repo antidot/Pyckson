@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List, Dict
 from unittest import TestCase
 
-from pyckson.decorators import pyckson, listtype, serializer
+from pyckson.decorators import pyckson, listtype, custom_serializer
 from pyckson.serializer import serialize
 from pyckson.serializers.base import Serializer
 
@@ -180,7 +180,7 @@ class SerializerTest(TestCase):
             def serialize(self, obj: Foo) -> dict:
                 return {'toto': obj.bar}
 
-        serializer(FooSerializer)(Foo)
+        custom_serializer(FooSerializer)(Foo)
 
         result = serialize(Foo(42))
 
@@ -199,7 +199,7 @@ class SerializerTest(TestCase):
             def __init__(self, bar: Bar):
                 self.bar = bar
 
-        serializer(BarSerializer)(Bar)
+        custom_serializer(BarSerializer)(Bar)
 
         result = serialize(Foo(Bar()))
 

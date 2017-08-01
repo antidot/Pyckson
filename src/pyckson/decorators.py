@@ -55,7 +55,7 @@ def rename(**kwargs):
     return class_decorator
 
 
-def serializer(serializer_cls):
+def custom_serializer(serializer_cls):
     def class_decorator(cls):
         setattr(cls, PYCKSON_SERIALIZER, serializer_cls)
         return cls
@@ -63,7 +63,7 @@ def serializer(serializer_cls):
     return class_decorator
 
 
-def parser(parser_cls):
+def custom_parser(parser_cls):
     def class_decorator(cls):
         setattr(cls, PYCKSON_PARSER, parser_cls)
         return cls

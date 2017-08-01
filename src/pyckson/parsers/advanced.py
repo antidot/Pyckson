@@ -1,5 +1,5 @@
 from pyckson.const import PYCKSON_PARSER
-from pyckson.helpers import TypeProvider, is_base_type
+from pyckson.helpers import TypeProvider, is_base_type, get_custom_parser
 from pyckson.parsers.base import Parser, BasicParser
 from pyckson.providers import ModelProvider
 
@@ -13,7 +13,7 @@ class GenericParser(Parser):
         if is_base_type(self.cls):
             return BasicParser().parse(json_value)
         elif hasattr(self.cls, PYCKSON_PARSER):
-            return getattr(self.cls, PYCKSON_PARSER)().parse(json_value)
+            return get_custom_parser(self.cls).parse(json_value)
         else:
             return ClassParser(self.cls, self.model_provider).parse(json_value)
 
@@ -45,3 +45,11 @@ class ClassParser(Parser):
                 raise ValueError(
                     'json is missing attribute {} to parse object {}'.format(attribute.json_name, self.cls))
         return self.cls(**obj_args)
+
+
+class CustomDeferredParser(Parser):
+    def __init__(self, cls):
+        self.cls = cls
+
+    def parse(self, json_value):
+        return get_custom_parser(self.cls).parse(json_value)

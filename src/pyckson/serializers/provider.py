@@ -3,7 +3,7 @@ from typing import List, _ForwardRef, Dict
 
 from pyckson.const import BASIC_TYPES, PYCKSON_TYPEINFO, PYCKSON_SERIALIZER
 from pyckson.providers import SerializerProvider, ModelProvider
-from pyckson.serializers.advanced import ClassSerializer, GenericSerializer
+from pyckson.serializers.advanced import ClassSerializer, GenericSerializer, CustomDeferredSerializer
 from pyckson.serializers.base import BasicSerializer, ListSerializer, EnumSerializer, Serializer, DictSerializer
 
 
@@ -15,8 +15,8 @@ class SerializerProviderImpl(SerializerProvider):
         if obj_type in BASIC_TYPES:
             return BasicSerializer()
         if hasattr(obj_type, PYCKSON_SERIALIZER):
-            return getattr(obj_type, PYCKSON_SERIALIZER)()
-        if type(obj_type) is str or  type(obj_type) is _ForwardRef:
+            return CustomDeferredSerializer(obj_type)
+        if type(obj_type) is str or type(obj_type) is _ForwardRef:
             return GenericSerializer(self.model_provider)
         if obj_type is list:
             type_info = getattr(parent_class, PYCKSON_TYPEINFO, dict())
