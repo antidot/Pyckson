@@ -41,7 +41,7 @@ def is_base_type(obj):
 
 
 class TypeProvider:
-    def __init__(self, cls, name: Union[str, _ForwardRef]):
+    def __init__(self, cls, name):
         self.cls = cls
         self.name = name.__forward_arg__ if type(name) is _ForwardRef else name
 
