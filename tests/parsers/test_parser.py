@@ -1,9 +1,9 @@
 from datetime import datetime
 from enum import Enum
-from typing import List, Dict
+from typing import List, Dict, Set
 from unittest import TestCase
 
-from pyckson.decorators import pyckson, listtype, caseinsensitive, custom_parser
+from pyckson.decorators import pyckson, listtype, caseinsensitive, custom_parser, settype
 from pyckson.parser import parse
 from pyckson.parsers.base import Parser
 
@@ -184,3 +184,23 @@ class ParserTest(TestCase):
         result = parse(Foo, {'bar': {}})
 
         self.assertEqual(result.bar.x, 42)
+
+    def test_parse_set_as_list(self):
+        class Foo:
+            def __init__(self, x: Set[int]):
+                self.x = x
+
+        result = parse(Foo, {'x': [1, 2, 3]})
+
+        self.assertEqual(result.x, {1, 2, 3})
+
+    def test_class_with_legacy_set(self):
+        @pyckson
+        @settype('bar', str)
+        class Foo:
+            def __init__(self, bar: set):
+                self.bar = bar
+
+        result = parse(Foo, {'bar': ['a', 'b']})
+
+        self.assertEqual(result.bar, {'a', 'b'})

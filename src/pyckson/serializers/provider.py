@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, _ForwardRef, Dict
+from typing import List, _ForwardRef, Dict, Set
 
 from pyckson.const import BASIC_TYPES, PYCKSON_TYPEINFO, PYCKSON_SERIALIZER
 from pyckson.providers import SerializerProvider, ModelProvider
@@ -18,7 +18,7 @@ class SerializerProviderImpl(SerializerProvider):
             return CustomDeferredSerializer(obj_type)
         if type(obj_type) is str or type(obj_type) is _ForwardRef:
             return GenericSerializer(self.model_provider)
-        if obj_type is list:
+        if obj_type is list or obj_type is set:
             type_info = getattr(parent_class, PYCKSON_TYPEINFO, dict())
             if name_in_parent in type_info:
                 sub_type = type_info[name_in_parent]
@@ -26,7 +26,7 @@ class SerializerProviderImpl(SerializerProvider):
             else:
                 raise TypeError('list parameter {} in class {} has no subType'.format(name_in_parent,
                                                                                       parent_class.__name__))
-        if issubclass(obj_type, List):
+        if issubclass(obj_type, List) or issubclass(obj_type, Set):
             return ListSerializer(self.get(obj_type.__args__[0], parent_class, name_in_parent))
         if issubclass(obj_type, Enum):
             return EnumSerializer()

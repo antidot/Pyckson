@@ -1,8 +1,8 @@
 from datetime import datetime
-from typing import List, Dict
+from typing import List, Dict, Set
 from unittest import TestCase
 
-from pyckson.decorators import pyckson, listtype, custom_serializer
+from pyckson.decorators import pyckson, listtype, custom_serializer, settype
 from pyckson.serializer import serialize
 from pyckson.serializers.base import Serializer
 
@@ -204,3 +204,25 @@ class SerializerTest(TestCase):
         result = serialize(Foo(Bar()))
 
         self.assertEqual(result, {'bar': 42})
+
+    def test_serialize_set_as_list(self):
+        class Foo:
+            def __init__(self, x: Set[int]):
+                self.x = x
+
+        result = serialize(Foo({1, 2}))
+
+        # because of unknown ordering
+        self.assertSetEqual(set(result['x']), {1, 2})
+
+    def test_class_with_legacy_set(self):
+        @pyckson
+        @settype('bar', str)
+        class Foo:
+            def __init__(self, bar: set):
+                self.bar = bar
+
+        result = serialize(Foo({'a', 'b'}))
+
+        # because of unknown ordering
+        self.assertSetEqual(set(result['bar']), {'a', 'b'})

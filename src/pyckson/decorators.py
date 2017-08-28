@@ -17,6 +17,9 @@ def listtype(param_name, param_sub_type):
     return class_decorator
 
 
+settype = listtype
+
+
 def pyckson(cls):
     ModelProviderImpl().get_or_build(cls)
     setattr(cls, 'parse', lambda json: parse(cls, json))

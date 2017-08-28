@@ -16,6 +16,14 @@ class ListParser(Parser):
         return [self.sub_parser.parse(item) for item in json_value]
 
 
+class SetParser(Parser):
+    def __init__(self, sub_parser: Parser):
+        self.sub_parser = sub_parser
+
+    def parse(self, json_value):
+        return {self.sub_parser.parse(item) for item in json_value}
+
+
 class DefaultEnumParser(Parser):
     def __init__(self, cls):
         self.cls = cls
