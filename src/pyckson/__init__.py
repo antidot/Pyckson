@@ -5,4 +5,4 @@ from pyckson.parsers.base import Parser
 from pyckson.serializer import serialize
 from pyckson.serializers.base import Serializer
 
-__version__ = '1.1'
+__version__ = '1.2'
