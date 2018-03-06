@@ -19,7 +19,6 @@ pyckson aims to be a json serializer/parser that favors convention over configur
 ```python
 from pyckson import pyckson, listtype, serialize, parse
 
-@pyckson
 class Foo:
     def __init__(self, arg1: str):
         self.arg1 = arg1
@@ -27,10 +26,8 @@ class Foo:
     def __str__(self):
         return 'Foo({})'.format(self.arg1)
 
-@pyckson
-@listtype('a_list', int)
 class Bar:
-    def __init__(self, a_foo: Foo, a_list: list):
+    def __init__(self, a_foo: Foo, a_list: List[int]):
         self.a_foo = a_foo
         self.a_list = a_list
         
