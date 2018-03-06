@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from typing import List, Dict, Set
+from typing import List, Dict, Set, Optional
 from unittest import TestCase
 
 from pyckson.decorators import pyckson, listtype, caseinsensitive, custom_parser, settype
@@ -204,3 +204,12 @@ class ParserTest(TestCase):
         result = parse(Foo, {'bar': ['a', 'b']})
 
         self.assertEqual(result.bar, {'a', 'b'})
+
+    def test_parse_absent_optional_type(self):
+        class Foo:
+            def __init__(self, bar: Optional[str] = 'b'):
+                self.bar = bar
+
+        result = parse(Foo, {})
+
+        self.assertEqual(result.bar, 'b')

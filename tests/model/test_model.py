@@ -1,4 +1,5 @@
 from inspect import Parameter
+from typing import Optional
 from unittest import TestCase
 
 from pyckson import listtype
@@ -149,3 +150,15 @@ class PycksonModelTest(TestCase):
         self.assertEqual(model.get_attribute(python_name='foo').python_name, 'foo')
         with self.assertRaises(KeyError):
             model.get_attribute(python_name='self')
+
+    def test_optional_type(self):
+        class Foo:
+            def __init__(self, bar: Optional[str]):
+                pass
+
+        model = PycksonModelBuilder(Foo,
+                                    SerializerProviderImpl(ModelProviderImpl()),
+                                    ParserProviderImpl(ModelProviderImpl())).build_model()
+
+        self.assertTrue(model.get_attribute(python_name='bar').optional)
+        self.assertEqual(model.get_attribute(python_name='bar').attr_type, str)

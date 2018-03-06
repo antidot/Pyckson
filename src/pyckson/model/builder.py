@@ -1,4 +1,5 @@
 from inspect import Parameter, getmembers, signature
+from typing import Union
 
 from pyckson.const import PYCKSON_TYPEINFO
 from pyckson.helpers import get_name_rule
@@ -30,6 +31,10 @@ class PycksonModelBuilder:
                 attributes.append(attribute)
         return PycksonModel(attributes)
 
+    def is_optional_type(self, param_type):
+        return issubclass(param_type, Union) and len(param_type.__union_params__) == 2 and \
+               isinstance(None, param_type.__union_params__[1])
+
     def build_attribute(self, parameter: Parameter) -> PycksonAttribute:
         python_name = parameter.name
         json_name = self.name_rule(parameter.name)
@@ -38,6 +43,11 @@ class PycksonModelBuilder:
             raise TypeError('parameter {} in class {} has no type'.format(parameter.name, self.cls.__name__))
         if parameter.kind != Parameter.POSITIONAL_OR_KEYWORD:
             raise TypeError('pyckson only handle named parameters')
+        if self.is_optional_type(parameter.annotation):
+            return PycksonAttribute(python_name, json_name, parameter.annotation.__union_params__[0], True,
+                                    self.serializer_provider.get(str, self.cls, python_name),
+                                    self.parser_provider.get(str, self.cls, python_name))
+
         return PycksonAttribute(python_name, json_name, parameter.annotation, optional,
                                 self.serializer_provider.get(parameter.annotation, self.cls, python_name),
                                 self.parser_provider.get(parameter.annotation, self.cls, python_name))

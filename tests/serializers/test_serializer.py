@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Dict, Set
+from typing import List, Dict, Set, Optional
 from unittest import TestCase
 
 from pyckson.decorators import pyckson, listtype, custom_serializer, settype
@@ -226,3 +226,21 @@ class SerializerTest(TestCase):
 
         # because of unknown ordering
         self.assertSetEqual(set(result['bar']), {'a', 'b'})
+
+    def test_class_with_optional_param_type(self):
+        class Foo:
+            def __init__(self, bar: Optional[str]):
+                self.bar = bar
+
+        result = serialize(Foo('a'))
+
+        self.assertEqual(result, {'bar': 'a'})
+
+    def test_class_with_optional_param_type_absent(self):
+        class Foo:
+            def __init__(self, bar: Optional[str]):
+                self.bar = bar
+
+        result = serialize(Foo(None))
+
+        self.assertEqual(result, {})
