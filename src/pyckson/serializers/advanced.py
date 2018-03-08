@@ -1,4 +1,7 @@
+from datetime import date, datetime
+
 from pyckson.const import PYCKSON_SERIALIZER
+from pyckson.dates.helpers import get_class_date_formatter
 from pyckson.helpers import is_base_type, get_custom_serializer
 from pyckson.providers import ModelProvider
 from pyckson.serializers.base import Serializer, BasicSerializer
@@ -41,3 +44,16 @@ class CustomDeferredSerializer(Serializer):
 
     def serialize(self, obj):
         return get_custom_serializer(self.cls).serialize(obj)
+
+
+class DateSerializer(Serializer):
+    def __init__(self, cls, obj_type):
+        self.cls = cls
+        self.obj_type = obj_type
+
+    def serialize(self, obj):
+        formatter = get_class_date_formatter(self.cls)
+        if self.obj_type is date:
+            return formatter.serialize_date(obj)
+        if self.obj_type is datetime:
+            return formatter.serialize_datetime(obj)

@@ -1,9 +1,10 @@
 from enum import Enum
 from typing import List, _ForwardRef, Dict, Set
 
-from pyckson.const import BASIC_TYPES, PYCKSON_TYPEINFO, PYCKSON_ENUM_OPTIONS, ENUM_CASE_INSENSITIVE, PYCKSON_PARSER
+from pyckson.const import BASIC_TYPES, PYCKSON_TYPEINFO, PYCKSON_ENUM_OPTIONS, ENUM_CASE_INSENSITIVE, PYCKSON_PARSER, \
+    DATE_TYPES
 from pyckson.helpers import TypeProvider
-from pyckson.parsers.advanced import UnresolvedParser, ClassParser, CustomDeferredParser
+from pyckson.parsers.advanced import UnresolvedParser, ClassParser, CustomDeferredParser, DateParser
 from pyckson.parsers.base import Parser, BasicParser, ListParser, CaseInsensitiveEnumParser, DefaultEnumParser, \
     DictParser, SetParser
 from pyckson.providers import ParserProvider, ModelProvider
@@ -16,6 +17,8 @@ class ParserProviderImpl(ParserProvider):
     def get(self, obj_type, parent_class, name_in_parent) -> Parser:
         if obj_type in BASIC_TYPES:
             return BasicParser()
+        if obj_type in DATE_TYPES:
+            return DateParser(parent_class, obj_type)
         if hasattr(obj_type, PYCKSON_PARSER):
             return CustomDeferredParser(obj_type)
         if type(obj_type) is str or type(obj_type) is _ForwardRef:
@@ -35,7 +38,7 @@ class ParserProviderImpl(ParserProvider):
                 return SetParser(self.get(sub_type, parent_class, name_in_parent))
             else:
                 raise TypeError('set parameter {} in class {} has no subType'.format(name_in_parent,
-                                                                                      parent_class.__name__))
+                                                                                     parent_class.__name__))
         if issubclass(obj_type, List):
             return ListParser(self.get(obj_type.__args__[0], parent_class, name_in_parent))
         if issubclass(obj_type, Set):

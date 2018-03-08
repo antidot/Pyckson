@@ -1,4 +1,7 @@
+from datetime import date, datetime
+
 from pyckson.const import PYCKSON_PARSER
+from pyckson.dates.helpers import get_class_date_formatter
 from pyckson.helpers import TypeProvider, is_base_type, get_custom_parser
 from pyckson.parsers.base import Parser, BasicParser
 from pyckson.providers import ModelProvider
@@ -55,3 +58,16 @@ class CustomDeferredParser(Parser):
 
     def parse(self, json_value):
         return get_custom_parser(self.cls).parse(json_value)
+
+
+class DateParser(Parser):
+    def __init__(self, cls, obj_type):
+        self.cls = cls
+        self.obj_type = obj_type
+
+    def parse(self, json_value):
+        formatter = get_class_date_formatter(self.cls)
+        if self.obj_type is date:
+            return formatter.parse_date(json_value)
+        if self.obj_type is datetime:
+            return formatter.parse_datetime(json_value)

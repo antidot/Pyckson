@@ -23,5 +23,5 @@ setup(name='Pyckson',
       keywords='pyckson json',
       packages=find_packages(where='src'),
       package_dir={'': 'src'},
-      install_requires=[]
+      install_requires=['arrow']
       )
