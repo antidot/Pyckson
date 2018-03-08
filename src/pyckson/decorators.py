@@ -1,7 +1,8 @@
 from enum import Enum
 
 from pyckson.const import PYCKSON_TYPEINFO, PYCKSON_NAMERULE, PYCKSON_ENUM_OPTIONS, \
-    ENUM_CASE_INSENSITIVE, PYCKSON_SERIALIZER, PYCKSON_PARSER
+    ENUM_CASE_INSENSITIVE, PYCKSON_SERIALIZER, PYCKSON_PARSER, PYCKSON_DATE_FORMATTER
+from pyckson.dates.model import DateFormatter
 from pyckson.helpers import same_name, name_by_dict, get_name_rule
 from pyckson.model.helpers import ModelProviderImpl
 from pyckson.parser import parse
@@ -69,6 +70,14 @@ def custom_serializer(serializer_cls):
 def custom_parser(parser_cls):
     def class_decorator(cls):
         setattr(cls, PYCKSON_PARSER, parser_cls)
+        return cls
+
+    return class_decorator
+
+
+def date_formatter(formatter: DateFormatter):
+    def class_decorator(cls):
+        setattr(cls, PYCKSON_DATE_FORMATTER, formatter)
         return cls
 
     return class_decorator

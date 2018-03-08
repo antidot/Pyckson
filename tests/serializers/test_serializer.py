@@ -1,8 +1,10 @@
-from datetime import datetime
+from datetime import datetime, date
 from typing import List, Dict, Set, Optional
 from unittest import TestCase
 
-from pyckson.decorators import pyckson, listtype, custom_serializer, settype
+from pyckson import dumps
+from pyckson.dates.arrow import ArrowStringFormatter
+from pyckson.decorators import pyckson, listtype, custom_serializer, settype, date_formatter
 from pyckson.serializer import serialize
 from pyckson.serializers.base import Serializer
 
@@ -244,3 +246,13 @@ class SerializerTest(TestCase):
         result = serialize(Foo(None))
 
         self.assertEqual(result, {})
+
+    def test_dumps_object_with_date(self):
+        @date_formatter(ArrowStringFormatter())
+        class Foo:
+            def __init__(self, bar: date):
+                self.bar = bar
+
+        result = dumps(Foo(date(2018, 3, 8)))
+
+        self.assertEqual(result, '{"bar": "2018-03-08"}')

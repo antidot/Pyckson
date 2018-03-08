@@ -1,8 +1,10 @@
-from datetime import datetime
+from datetime import datetime, date
 from enum import Enum
 from typing import List, Dict, Set, Optional
 from unittest import TestCase
 
+from pyckson import date_formatter, loads
+from pyckson.dates.arrow import ArrowStringFormatter
 from pyckson.decorators import pyckson, listtype, caseinsensitive, custom_parser, settype
 from pyckson.parser import parse
 from pyckson.parsers.base import Parser
@@ -222,3 +224,13 @@ class ParserTest(TestCase):
         result = parse(Foo, {})
 
         self.assertEqual(result.bar, None)
+
+    def test_parse_string_with_date(self):
+        @date_formatter(ArrowStringFormatter())
+        class Foo:
+            def __init__(self, bar: date):
+                self.bar = bar
+
+        result = loads(Foo, '{"bar": "2018-03-08"}')
+
+        self.assertEqual(result.bar, date(2018, 3, 8))

@@ -1,6 +1,6 @@
 import re
 import sys
-from typing import _ForwardRef, Union
+from typing import _ForwardRef
 
 from pyckson.const import PYCKSON_ATTR, BASIC_TYPES, PYCKSON_NAMERULE, PYCKSON_SERIALIZER, PYCKSON_PARSER
 from pyckson.parsers.base import Parser
