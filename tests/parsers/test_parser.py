@@ -213,3 +213,12 @@ class ParserTest(TestCase):
         result = parse(Foo, {})
 
         self.assertEqual(result.bar, 'b')
+
+    def test_parsing_optional_without_default_should_set_as_none(self):
+        class Foo:
+            def __init__(self, bar: Optional[str]):
+                self.bar = bar
+
+        result = parse(Foo, {})
+
+        self.assertEqual(result.bar, None)

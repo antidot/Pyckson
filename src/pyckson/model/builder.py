@@ -43,7 +43,8 @@ class PycksonModelBuilder:
         if is_optional:
             return PycksonAttribute(python_name, json_name, optional_type, True,
                                     self.serializer_provider.get(str, self.cls, python_name),
-                                    self.parser_provider.get(str, self.cls, python_name))
+                                    self.parser_provider.get(str, self.cls, python_name),
+                                    force_default=parameter.default == Parameter.empty)
 
         return PycksonAttribute(python_name, json_name, parameter.annotation, optional,
                                 self.serializer_provider.get(parameter.annotation, self.cls, python_name),

@@ -41,6 +41,8 @@ class ClassParser(Parser):
                 value = json_value[attribute.json_name]
                 python_value = attribute.parser.parse(value)
                 obj_args[attribute.python_name] = python_value
+            elif attribute.optional and attribute.force_default:
+                obj_args[attribute.python_name] = None
             elif not attribute.optional:
                 raise ValueError(
                     'json is missing attribute {} to parse object {}'.format(attribute.json_name, self.cls))
