@@ -1,9 +1,9 @@
 from inspect import Parameter, getmembers, signature
-from typing import Union
 
 from pyckson.const import PYCKSON_TYPEINFO
 from pyckson.helpers import get_name_rule
 from pyckson.model.model import PycksonModel, PycksonAttribute
+from pyckson.model.union import inspect_optional_typing
 from pyckson.providers import SerializerProvider, ParserProvider
 
 
@@ -31,28 +31,6 @@ class PycksonModelBuilder:
                 attributes.append(attribute)
         return PycksonModel(attributes)
 
-    def is_optional_type(self, param_type):
-        # seems like at some point internal behavior on typing Union changed
-        # https://bugs.launchpad.net/ubuntu/+source/python3.5/+bug/1650202
-        if "Union" not in str(param_type):
-            return False
-        if hasattr(param_type, '__origin__'):
-            is_union = param_type.__origin__ == Union
-        else:
-            is_union = issubclass(param_type, Union)
-
-        if not is_union:
-            return False
-
-        union_args = self.get_union_params(param_type)
-        return is_union and len(union_args) == 2 and isinstance(None, union_args[1])
-
-    def get_union_params(self, param_type):
-        if hasattr(param_type, '__args__'):
-            return param_type.__args__
-        else:
-            return param_type.__union_params__
-
     def build_attribute(self, parameter: Parameter) -> PycksonAttribute:
         python_name = parameter.name
         json_name = self.name_rule(parameter.name)
@@ -61,8 +39,9 @@ class PycksonModelBuilder:
             raise TypeError('parameter {} in class {} has no type'.format(parameter.name, self.cls.__name__))
         if parameter.kind != Parameter.POSITIONAL_OR_KEYWORD:
             raise TypeError('pyckson only handle named parameters')
-        if self.is_optional_type(parameter.annotation):
-            return PycksonAttribute(python_name, json_name, self.get_union_params(parameter.annotation)[0], True,
+        is_optional, optional_type = inspect_optional_typing(parameter.annotation)
+        if is_optional:
+            return PycksonAttribute(python_name, json_name, optional_type, True,
                                     self.serializer_provider.get(str, self.cls, python_name),
                                     self.parser_provider.get(str, self.cls, python_name))
 
