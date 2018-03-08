@@ -2,6 +2,7 @@
 A simple python library to serialize python objects to json
 
 [![Build Status](https://travis-ci.org/antidot/Pyckson.svg?branch=master)](https://travis-ci.org/antidot/Pyckson)
+[![Documentation Status](http://readthedocs.org/projects/pyckson/badge/?version=latest)](http://pyckson.readthedocs.io/en/latest/?badge=latest)
 
 ## Concepts
 pyckson aims to be a json serializer/parser that favors convention over configuration
