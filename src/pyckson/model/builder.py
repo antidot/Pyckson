@@ -42,8 +42,8 @@ class PycksonModelBuilder:
         is_optional, optional_type = inspect_optional_typing(parameter.annotation)
         if is_optional:
             return PycksonAttribute(python_name, json_name, optional_type, True,
-                                    self.serializer_provider.get(str, self.cls, python_name),
-                                    self.parser_provider.get(str, self.cls, python_name),
+                                    self.serializer_provider.get(optional_type, self.cls, python_name),
+                                    self.parser_provider.get(optional_type, self.cls, python_name),
                                     force_default=parameter.default == Parameter.empty)
 
         return PycksonAttribute(python_name, json_name, parameter.annotation, optional,

@@ -256,3 +256,16 @@ class SerializerTest(TestCase):
         result = dumps(Foo(date(2018, 3, 8)))
 
         self.assertEqual(result, '{"bar": "2018-03-08"}')
+
+    def test_class_with_optional_object_param_type(self):
+        class Foo:
+            def __init__(self, arg1: str):
+                self.arg1 = arg1
+
+        class Bar:
+            def __init__(self, a_foo: Optional[Foo]):
+                self.a_foo = a_foo
+
+        result = serialize(Bar(Foo("foo")))
+
+        self.assertEqual(result, {'aFoo': {'arg1': 'foo'}})
