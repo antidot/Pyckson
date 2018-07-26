@@ -1,9 +1,12 @@
 language: python
-python:
-  - "3.4"
-  - "3.5"
-  - "3.6"
-  - "3.7"
+matrix:
+  include:
+    - dist: xenial
+      python: "3.7"
+      sudo: true
+    - python: "3.4"
+    - python: "3.5"
+    - python: "3.6"
 script:
   - pip install .
   - cd tests && python3 -m pytest
