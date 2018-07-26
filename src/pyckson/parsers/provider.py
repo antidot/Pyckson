@@ -1,9 +1,11 @@
-from enum import Enum
-from typing import List, _ForwardRef, Dict, Set
+try:
+    from typing import _ForwardRef as ForwardRef
+except ImportError:
+    from typing import ForwardRef
 
 from pyckson.const import BASIC_TYPES, PYCKSON_TYPEINFO, PYCKSON_ENUM_OPTIONS, ENUM_CASE_INSENSITIVE, PYCKSON_PARSER, \
     DATE_TYPES
-from pyckson.helpers import TypeProvider
+from pyckson.helpers import TypeProvider, is_list_annotation, is_set_annotation, is_enum_annotation, is_dict_annotation
 from pyckson.parsers.advanced import UnresolvedParser, ClassParser, CustomDeferredParser, DateParser
 from pyckson.parsers.base import Parser, BasicParser, ListParser, CaseInsensitiveEnumParser, DefaultEnumParser, \
     DictParser, SetParser
@@ -21,7 +23,7 @@ class ParserProviderImpl(ParserProvider):
             return DateParser(parent_class, obj_type)
         if hasattr(obj_type, PYCKSON_PARSER):
             return CustomDeferredParser(obj_type)
-        if type(obj_type) is str or type(obj_type) is _ForwardRef:
+        if type(obj_type) is str or type(obj_type) is ForwardRef:
             return UnresolvedParser(TypeProvider(parent_class, obj_type), self.model_provider)
         if obj_type is list:
             type_info = getattr(parent_class, PYCKSON_TYPEINFO, dict())
@@ -39,16 +41,16 @@ class ParserProviderImpl(ParserProvider):
             else:
                 raise TypeError('set parameter {} in class {} has no subType'.format(name_in_parent,
                                                                                      parent_class.__name__))
-        if issubclass(obj_type, List):
+        if is_list_annotation(obj_type):
             return ListParser(self.get(obj_type.__args__[0], parent_class, name_in_parent))
-        if issubclass(obj_type, Set):
+        if is_set_annotation(obj_type):
             return SetParser(self.get(obj_type.__args__[0], parent_class, name_in_parent))
-        if issubclass(obj_type, Enum):
+        if is_enum_annotation(obj_type):
             options = getattr(obj_type, PYCKSON_ENUM_OPTIONS, {})
             if options.get(ENUM_CASE_INSENSITIVE, False):
                 return CaseInsensitiveEnumParser(obj_type)
             else:
                 return DefaultEnumParser(obj_type)
-        if issubclass(obj_type, Dict) or issubclass(obj_type, dict):
+        if is_dict_annotation(obj_type):
             return DictParser()
         return ClassParser(obj_type, self.model_provider)

@@ -1,5 +1,9 @@
-from enum import Enum
-from typing import List, _ForwardRef, Dict, Set
+from pyckson.helpers import is_list_annotation, is_set_annotation, is_enum_annotation, is_dict_annotation
+
+try:
+    from typing import _ForwardRef as ForwardRef
+except ImportError:
+    from typing import ForwardRef
 
 from pyckson.const import BASIC_TYPES, PYCKSON_TYPEINFO, PYCKSON_SERIALIZER, DATE_TYPES
 from pyckson.providers import SerializerProvider, ModelProvider
@@ -18,7 +22,7 @@ class SerializerProviderImpl(SerializerProvider):
             return DateSerializer(parent_class, obj_type)
         if hasattr(obj_type, PYCKSON_SERIALIZER):
             return CustomDeferredSerializer(obj_type)
-        if type(obj_type) is str or type(obj_type) is _ForwardRef:
+        if type(obj_type) is str or type(obj_type) is ForwardRef:
             return GenericSerializer(self.model_provider)
         if obj_type is list or obj_type is set:
             type_info = getattr(parent_class, PYCKSON_TYPEINFO, dict())
@@ -28,10 +32,10 @@ class SerializerProviderImpl(SerializerProvider):
             else:
                 raise TypeError('list parameter {} in class {} has no subType'.format(name_in_parent,
                                                                                       parent_class.__name__))
-        if issubclass(obj_type, List) or issubclass(obj_type, Set):
+        if is_list_annotation(obj_type) or is_set_annotation(obj_type):
             return ListSerializer(self.get(obj_type.__args__[0], parent_class, name_in_parent))
-        if issubclass(obj_type, Enum):
+        if is_enum_annotation(obj_type):
             return EnumSerializer()
-        if issubclass(obj_type, Dict) or issubclass(obj_type, dict):
+        if is_dict_annotation(obj_type):
             return DictSerializer()
         return ClassSerializer(self.model_provider)

@@ -1,6 +1,13 @@
 import re
 import sys
-from typing import _ForwardRef
+from enum import Enum
+
+from typing import List, Set, Dict
+
+try:
+    from typing import _ForwardRef as ForwardRef
+except ImportError:
+    from typing import ForwardRef
 
 from pyckson.const import PYCKSON_ATTR, BASIC_TYPES, PYCKSON_NAMERULE, PYCKSON_SERIALIZER, PYCKSON_PARSER
 from pyckson.parsers.base import Parser
@@ -43,7 +50,7 @@ def is_base_type(obj):
 class TypeProvider:
     def __init__(self, cls, name):
         self.cls = cls
-        self.name = name.__forward_arg__ if type(name) is _ForwardRef else name
+        self.name = name.__forward_arg__ if type(name) is ForwardRef else name
 
     def get(self):
         try:
@@ -64,3 +71,45 @@ def get_custom_parser(cls) -> Parser:
     if isinstance(parser, str):
         parser = TypeProvider(cls, parser).get()
     return parser()
+
+
+def is_list_annotation(annotation):
+    if hasattr(annotation, '_name'):
+        return annotation._name == 'List'
+    else:
+        try:
+            return issubclass(annotation, List)
+        except TypeError:
+            return False
+
+
+def is_set_annotation(annotation):
+    if hasattr(annotation, '_name'):
+        return annotation._name == 'Set'
+    else:
+        try:
+            return issubclass(annotation, Set)
+        except TypeError:
+            return False
+
+
+def is_enum_annotation(annotation):
+    if hasattr(annotation, '_name'):
+        return annotation._name == 'Enum'
+    else:
+        try:
+            return issubclass(annotation, Enum)
+        except TypeError:
+            return False
+
+
+def is_dict_annotation(annotation):
+    if type(annotation) is type and issubclass(annotation, dict):
+        return True
+    if hasattr(annotation, '_name'):
+        return annotation._name == 'Dict'
+    else:
+        try:
+            return issubclass(annotation, Dict)
+        except TypeError:
+            return False
