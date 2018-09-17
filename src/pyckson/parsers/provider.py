@@ -4,11 +4,11 @@ except ImportError:
     from typing import ForwardRef
 
 from pyckson.const import BASIC_TYPES, PYCKSON_TYPEINFO, PYCKSON_ENUM_OPTIONS, ENUM_CASE_INSENSITIVE, PYCKSON_PARSER, \
-    DATE_TYPES
+    DATE_TYPES, EXTRA_TYPES
 from pyckson.helpers import TypeProvider, is_list_annotation, is_set_annotation, is_enum_annotation, is_dict_annotation
 from pyckson.parsers.advanced import UnresolvedParser, ClassParser, CustomDeferredParser, DateParser
 from pyckson.parsers.base import Parser, BasicParser, ListParser, CaseInsensitiveEnumParser, DefaultEnumParser, \
-    DictParser, SetParser
+    DictParser, SetParser, BasicParserWithCast
 from pyckson.providers import ParserProvider, ModelProvider
 
 
@@ -18,6 +18,8 @@ class ParserProviderImpl(ParserProvider):
 
     def get(self, obj_type, parent_class, name_in_parent) -> Parser:
         if obj_type in BASIC_TYPES:
+            return BasicParserWithCast(obj_type)
+        if obj_type in EXTRA_TYPES:
             return BasicParser()
         if obj_type in DATE_TYPES:
             return DateParser(parent_class, obj_type)

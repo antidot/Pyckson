@@ -5,7 +5,7 @@ from unittest import TestCase
 from pyckson import listtype
 from pyckson.model.builder import PycksonModelBuilder
 from pyckson.model.helpers import ModelProviderImpl
-from pyckson.parsers.base import ListParser, BasicParser
+from pyckson.parsers.base import ListParser, BasicParserWithCast
 from pyckson.parsers.provider import ParserProviderImpl
 from pyckson.serializers.provider import SerializerProviderImpl
 
@@ -107,7 +107,7 @@ class PycksonAttributeTest(TestCase):
                                         ParserProviderImpl(ModelProviderImpl())).build_attribute(parameter)
 
         self.assertEqual(type(attribute.parser), ListParser)
-        self.assertEqual(type(attribute.parser.sub_parser), BasicParser)
+        self.assertEqual(type(attribute.parser.sub_parser), BasicParserWithCast)
 
 
 class PycksonModelTest(TestCase):

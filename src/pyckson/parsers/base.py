@@ -8,6 +8,14 @@ class BasicParser(Parser):
         return json_value
 
 
+class BasicParserWithCast(Parser):
+    def __init__(self, cls):
+        self.cls = cls
+
+    def parse(self, json_value):
+        return self.cls(json_value)
+
+
 class ListParser(Parser):
     def __init__(self, sub_parser: Parser):
         self.sub_parser = sub_parser

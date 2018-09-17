@@ -247,3 +247,25 @@ class ParserTest(TestCase):
         result = parse(Bar, {'aFoo': {'arg1': 'foo'}})
 
         self.assertEqual(result.a_foo.arg1, 'foo')
+
+    def test_basic_parser_should_try_to_convert_types(self):
+        class Foo:
+            def __init__(self, a: int, b: str, c: float, e: float):
+                self.a = a
+                self.b = b
+                self.c = c
+                self.e = e
+
+        result = parse(Foo, {'a': '42', 'b': 1, 'c': 5, 'e': '1.5'})
+        self.assertEqual(result.a, 42)
+        self.assertEqual(result.b, '1')
+        self.assertEqual(result.c, 5)
+        self.assertEqual(result.e, 1.5)
+
+    def test_basic_parser_should_fail_on_uncastable_values(self):
+        class Foo:
+            def __init__(self, a: int):
+                self.a = a
+
+        with self.assertRaises(ValueError):
+            parse(Foo, {'a': 'b'})

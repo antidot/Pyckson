@@ -2,8 +2,8 @@ from datetime import date, datetime
 
 from pyckson.const import PYCKSON_PARSER
 from pyckson.dates.helpers import get_class_date_formatter
-from pyckson.helpers import TypeProvider, is_base_type, get_custom_parser
-from pyckson.parsers.base import Parser, BasicParser
+from pyckson.helpers import TypeProvider, is_base_type, get_custom_parser, is_base_type_with_cast
+from pyckson.parsers.base import Parser, BasicParser, BasicParserWithCast
 from pyckson.providers import ModelProvider
 
 
@@ -15,6 +15,8 @@ class GenericParser(Parser):
     def parse(self, json_value):
         if is_base_type(self.cls):
             return BasicParser().parse(json_value)
+        elif is_base_type_with_cast(self.cls):
+            return BasicParserWithCast(self.cls).parse(json_value)
         elif hasattr(self.cls, PYCKSON_PARSER):
             return get_custom_parser(self.cls).parse(json_value)
         else:

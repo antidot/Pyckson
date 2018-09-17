@@ -5,7 +5,7 @@ try:
 except ImportError:
     from typing import ForwardRef
 
-from pyckson.const import BASIC_TYPES, PYCKSON_TYPEINFO, PYCKSON_SERIALIZER, DATE_TYPES
+from pyckson.const import BASIC_TYPES, PYCKSON_TYPEINFO, PYCKSON_SERIALIZER, DATE_TYPES, EXTRA_TYPES
 from pyckson.providers import SerializerProvider, ModelProvider
 from pyckson.serializers.advanced import ClassSerializer, GenericSerializer, CustomDeferredSerializer, DateSerializer
 from pyckson.serializers.base import BasicSerializer, ListSerializer, EnumSerializer, Serializer, DictSerializer
@@ -16,7 +16,7 @@ class SerializerProviderImpl(SerializerProvider):
         self.model_provider = model_provider
 
     def get(self, obj_type, parent_class, name_in_parent) -> Serializer:
-        if obj_type in BASIC_TYPES:
+        if obj_type in BASIC_TYPES or obj_type in EXTRA_TYPES:
             return BasicSerializer()
         if obj_type in DATE_TYPES:
             return DateSerializer(parent_class, obj_type)

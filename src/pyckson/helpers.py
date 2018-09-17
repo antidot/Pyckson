@@ -9,7 +9,7 @@ try:
 except ImportError:
     from typing import ForwardRef
 
-from pyckson.const import PYCKSON_ATTR, BASIC_TYPES, PYCKSON_NAMERULE, PYCKSON_SERIALIZER, PYCKSON_PARSER
+from pyckson.const import PYCKSON_ATTR, BASIC_TYPES, PYCKSON_NAMERULE, PYCKSON_SERIALIZER, PYCKSON_PARSER, EXTRA_TYPES
 from pyckson.parsers.base import Parser
 from pyckson.serializers.base import Serializer
 
@@ -40,8 +40,15 @@ def get_name_rule(obj_type):
     return getattr(obj_type, PYCKSON_NAMERULE, camel_case_name)
 
 
-def is_base_type(obj):
+def is_base_type_with_cast(obj):
     for btype in BASIC_TYPES:
+        if isinstance(obj, btype):
+            return True
+    return False
+
+
+def is_base_type(obj):
+    for btype in EXTRA_TYPES:
         if isinstance(obj, btype):
             return True
     return False
