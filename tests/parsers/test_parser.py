@@ -1,3 +1,4 @@
+import json
 from datetime import datetime, date
 from enum import Enum
 from typing import List, Dict, Set, Optional
@@ -314,3 +315,17 @@ class ParserTest(TestCase):
 
         with self.assertRaises(TypeError):
             parse(Bar, {'b': {'x': {'a': 1}}})
+
+    def test_from_issue_10(self):
+        class A:
+            def __init__(self, name: str):
+                self.name = name
+
+        class B:
+            def __init__(self, a: Dict[str, A]):
+                self.a = a
+
+        data = {"a": {"test": {"name": "A"}}}
+        payload = json.dumps(data)
+        result = loads(B, payload)
+        assert type(result.a['test']) == A
