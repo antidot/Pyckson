@@ -1,7 +1,8 @@
+from unittest import TestCase
+
 from datetime import datetime, date
 from enum import Enum
 from typing import List, Dict, Set, Optional
-from unittest import TestCase
 
 from pyckson import date_formatter, loads
 from pyckson.dates.arrow import ArrowStringFormatter
@@ -269,3 +270,22 @@ class ParserTest(TestCase):
 
         with self.assertRaises(ValueError):
             parse(Foo, {'a': 'b'})
+
+    def test_should_parse_list_type_as_a_list(self):
+        class Foo:
+            def __init__(self, a: int):
+                self.a = a
+
+        result = parse(List[Foo], [{'a': 1}, {'a': 2}])
+
+        self.assertEqual(len(result), 2)
+        self.assertEqual(result[0].a, 1)
+        self.assertEqual(result[1].a, 2)
+
+    def test_should_expect_a_list_when_parsing_as_list(self):
+        class Foo:
+            def __init__(self, a: int):
+                self.a = a
+
+        with self.assertRaises(TypeError):
+            parse(List[Foo], {'a': 1})
