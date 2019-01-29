@@ -269,3 +269,12 @@ class SerializerTest(TestCase):
         result = serialize(Bar(Foo("foo")))
 
         self.assertEqual(result, {'aFoo': {'arg1': 'foo'}})
+
+    def test_should_be_able_to_serialize_lists(self):
+        class Foo:
+            def __init__(self, a: int):
+                self.a = a
+
+        result = serialize([Foo(1), Foo(2)])
+
+        self.assertEqual(result, [{'a': 1}, {'a': 2}])

@@ -46,6 +46,14 @@ The function :py:func:`pyckson.serialize` takes an object and return a dict-like
 
 .. autofunction:: pyckson.serialize
 
+You can also serialize lists, pyckson will handle the recursion
+::
+
+    >>> from pyckson import serialize
+    >>> serialize([Example('foo', [1, 2]), Example('bar', [3, 4])])
+    [{'foo': 'foo', 'bar': [1, 2]}, {'foo': 'bar', 'bar': [3, 4]}]
+
+
 Parsing Objects
 ---------------
 
@@ -62,6 +70,8 @@ The function :py:func:`pyckson.parse` takes a class and a dictionnary and return
     [1, 2, 3]
 
 .. autofunction:: pyckson.parse
+
+Similarily to :py:func:`pyckson.serialize` you can also use the specific type `typing.List[cls]` to parse lists.
 
 Utility Functions
 -----------------
