@@ -7,4 +7,6 @@ def serialize(obj):
 
     :param obj: the object to serialize
     """
+    if isinstance(obj, list):
+        return [serialize(o) for o in obj]
     return GenericSerializer(ModelProviderImpl()).serialize(obj)
