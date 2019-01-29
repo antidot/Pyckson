@@ -48,6 +48,14 @@ class CaseInsensitiveEnumParser(Parser):
         return self.values[value.lower()]
 
 
-class DictParser(Parser):
+class BasicDictParser(Parser):
     def parse(self, json_value):
         return json_value
+
+
+class TypingDictParser(Parser):
+    def __init__(self, value_parser: Parser):
+        self.value_parser = value_parser
+
+    def parse(self, json_value):
+        return {k: self.value_parser.parse(v) for k, v in json_value.items()}

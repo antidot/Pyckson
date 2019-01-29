@@ -1,8 +1,8 @@
-from unittest import TestCase
-
+import json
 from datetime import datetime, date
 from enum import Enum
 from typing import List, Dict, Set, Optional
+from unittest import TestCase
 
 from pyckson import date_formatter, loads
 from pyckson.dates.arrow import ArrowStringFormatter
@@ -289,3 +289,43 @@ class ParserTest(TestCase):
 
         with self.assertRaises(TypeError):
             parse(List[Foo], {'a': 1})
+
+    def test_should_be_able_to_parse_dict_of_objects(self):
+        class Foo:
+            def __init__(self, a: int):
+                self.a = a
+
+        class Bar:
+            def __init__(self, b: Dict[str, Foo]):
+                self.b = b
+
+        result = parse(Bar, {'b': {'x': {'a': 1}}})
+
+        self.assertEqual(result.b['x'].a, 1)
+        self.assertEqual(type(result.b['x']), Foo)
+
+    def test_should_not_allow_dict_of_not_str(self):
+        class Foo:
+            def __init__(self, a: int):
+                self.a = a
+
+        class Bar:
+            def __init__(self, b: Dict[int, Foo]):
+                self.b = b
+
+        with self.assertRaises(TypeError):
+            parse(Bar, {'b': {'x': {'a': 1}}})
+
+    def test_from_issue_10(self):
+        class A:
+            def __init__(self, name: str):
+                self.name = name
+
+        class B:
+            def __init__(self, a: Dict[str, A]):
+                self.a = a
+
+        data = {"a": {"test": {"name": "A"}}}
+        payload = json.dumps(data)
+        result = loads(B, payload)
+        assert type(result.a['test']) == A

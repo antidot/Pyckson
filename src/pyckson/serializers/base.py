@@ -21,6 +21,14 @@ class EnumSerializer(Serializer):
         return obj.name
 
 
-class DictSerializer(Serializer):
+class BasicDictSerializer(Serializer):
     def serialize(self, obj):
         return obj
+
+
+class TypingDictSerializer(Serializer):
+    def __init__(self, value_serializer: Serializer):
+        self.value_serializer = value_serializer
+
+    def serialize(self, obj):
+        return {k: self.value_serializer.serialize(v) for k, v in obj.items()}

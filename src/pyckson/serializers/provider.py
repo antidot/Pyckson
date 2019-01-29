@@ -1,4 +1,5 @@
-from pyckson.helpers import is_list_annotation, is_set_annotation, is_enum_annotation, is_dict_annotation
+from pyckson.helpers import is_list_annotation, is_set_annotation, is_enum_annotation, is_basic_dict_annotation, \
+    is_typing_dict_annotation
 
 try:
     from typing import _ForwardRef as ForwardRef
@@ -8,7 +9,8 @@ except ImportError:
 from pyckson.const import BASIC_TYPES, PYCKSON_TYPEINFO, PYCKSON_SERIALIZER, DATE_TYPES, EXTRA_TYPES
 from pyckson.providers import SerializerProvider, ModelProvider
 from pyckson.serializers.advanced import ClassSerializer, GenericSerializer, CustomDeferredSerializer, DateSerializer
-from pyckson.serializers.base import BasicSerializer, ListSerializer, EnumSerializer, Serializer, DictSerializer
+from pyckson.serializers.base import BasicSerializer, ListSerializer, EnumSerializer, Serializer, BasicDictSerializer, \
+    TypingDictSerializer
 
 
 class SerializerProviderImpl(SerializerProvider):
@@ -36,6 +38,10 @@ class SerializerProviderImpl(SerializerProvider):
             return ListSerializer(self.get(obj_type.__args__[0], parent_class, name_in_parent))
         if is_enum_annotation(obj_type):
             return EnumSerializer()
-        if is_dict_annotation(obj_type):
-            return DictSerializer()
+        if is_basic_dict_annotation(obj_type):
+            return BasicDictSerializer()
+        if is_typing_dict_annotation(obj_type):
+            if obj_type.__args__[0] != str:
+                raise TypeError('typing.Dict key can only be str in class {}'.format(parent_class))
+            return TypingDictSerializer(self.get(obj_type.__args__[1], parent_class, name_in_parent))
         return ClassSerializer(self.model_provider)
