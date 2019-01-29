@@ -5,10 +5,11 @@ except ImportError:
 
 from pyckson.const import BASIC_TYPES, PYCKSON_TYPEINFO, PYCKSON_ENUM_OPTIONS, ENUM_CASE_INSENSITIVE, PYCKSON_PARSER, \
     DATE_TYPES, EXTRA_TYPES
-from pyckson.helpers import TypeProvider, is_list_annotation, is_set_annotation, is_enum_annotation, is_dict_annotation
+from pyckson.helpers import TypeProvider, is_list_annotation, is_set_annotation, is_enum_annotation, \
+    is_basic_dict_annotation, is_typing_dict_annotation
 from pyckson.parsers.advanced import UnresolvedParser, ClassParser, CustomDeferredParser, DateParser
 from pyckson.parsers.base import Parser, BasicParser, ListParser, CaseInsensitiveEnumParser, DefaultEnumParser, \
-    DictParser, SetParser, BasicParserWithCast
+    BasicDictParser, SetParser, BasicParserWithCast, TypingDictParser
 from pyckson.providers import ParserProvider, ModelProvider
 
 
@@ -53,6 +54,10 @@ class ParserProviderImpl(ParserProvider):
                 return CaseInsensitiveEnumParser(obj_type)
             else:
                 return DefaultEnumParser(obj_type)
-        if is_dict_annotation(obj_type):
-            return DictParser()
+        if is_basic_dict_annotation(obj_type):
+            return BasicDictParser()
+        if is_typing_dict_annotation(obj_type):
+            if obj_type.__args__[0] != str:
+                raise TypeError('typing.Dict key can only be str in class {}'.format(parent_class))
+            return TypingDictParser(self.get(obj_type.__args__[1], parent_class, name_in_parent))
         return ClassParser(obj_type, self.model_provider)

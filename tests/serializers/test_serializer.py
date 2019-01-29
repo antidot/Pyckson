@@ -278,3 +278,16 @@ class SerializerTest(TestCase):
         result = serialize([Foo(1), Foo(2)])
 
         self.assertEqual(result, [{'a': 1}, {'a': 2}])
+
+    def test_should_be_able_to_serialize_typing_dicts(self):
+        class Foo:
+            def __init__(self, a: int):
+                self.a = a
+
+        class Bar:
+            def __init__(self, b: Dict[str, Foo]):
+                self.b = b
+
+        result = serialize(Bar({'1': Foo(1), '2': Foo(2)}))
+
+        self.assertEqual(result, {'b': {'1': {'a': 1}, '2': {'a': 2}}})

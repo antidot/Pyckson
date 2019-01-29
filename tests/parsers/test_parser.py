@@ -1,8 +1,7 @@
-from unittest import TestCase
-
 from datetime import datetime, date
 from enum import Enum
 from typing import List, Dict, Set, Optional
+from unittest import TestCase
 
 from pyckson import date_formatter, loads
 from pyckson.dates.arrow import ArrowStringFormatter
@@ -289,3 +288,29 @@ class ParserTest(TestCase):
 
         with self.assertRaises(TypeError):
             parse(List[Foo], {'a': 1})
+
+    def test_should_be_able_to_parse_dict_of_objects(self):
+        class Foo:
+            def __init__(self, a: int):
+                self.a = a
+
+        class Bar:
+            def __init__(self, b: Dict[str, Foo]):
+                self.b = b
+
+        result = parse(Bar, {'b': {'x': {'a': 1}}})
+
+        self.assertEqual(result.b['x'].a, 1)
+        self.assertEqual(type(result.b['x']), Foo)
+
+    def test_should_not_allow_dict_of_not_str(self):
+        class Foo:
+            def __init__(self, a: int):
+                self.a = a
+
+        class Bar:
+            def __init__(self, b: Dict[int, Foo]):
+                self.b = b
+
+        with self.assertRaises(TypeError):
+            parse(Bar, {'b': {'x': {'a': 1}}})

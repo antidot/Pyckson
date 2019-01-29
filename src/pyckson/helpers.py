@@ -110,9 +110,13 @@ def is_enum_annotation(annotation):
             return False
 
 
-def is_dict_annotation(annotation):
+def is_basic_dict_annotation(annotation):
     if type(annotation) is type and issubclass(annotation, dict):
         return True
+    return False
+
+
+def is_typing_dict_annotation(annotation):
     if hasattr(annotation, '_name'):
         return annotation._name == 'Dict'
     else:
