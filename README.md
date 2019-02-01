@@ -66,3 +66,14 @@ Documentation is available at <http://pyckson.readthedocs.io/en/latest/>
 ## Contact
 
 opensource@antidot.net
+
+## Why not attrs
+
+I don't like the intrusiveness of attrs, 
+especially that you have to use a special attr.ib function and parameter for each attribute.
+Also it is not friendly with pycharm for constructor and attributes autocompletion / type checking.
+
+However python3.7 solves a lot of these problems, and if you target only this version, 
+dataclass + typing annotations + @attr.s decorator is probably the way to go.
+
+Until then I will continue to use pyckson.
