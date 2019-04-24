@@ -329,3 +329,15 @@ class ParserTest(TestCase):
         payload = json.dumps(data)
         result = loads(B, payload)
         assert type(result.a['test']) == A
+
+    def test_should_parse_optional_that_is_null(self):
+        class Foo:
+            def __init__(self, x: int):
+                self.x = x
+
+        class Bar:
+            def __init__(self, y: Optional[Foo] = None):
+                self.y = y
+
+        result = parse(Bar, {'y': None})
+        self.assertEqual(result.y, None)

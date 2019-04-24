@@ -42,7 +42,7 @@ class ClassParser(Parser):
         model = self.model_provider.get_or_build(self.cls)
         obj_args = {}
         for attribute in model.attributes:
-            if attribute.json_name in json_value:
+            if attribute.json_name in json_value and json_value[attribute.json_name] is not None:
                 value = json_value[attribute.json_name]
                 python_value = attribute.parser.parse(value)
                 obj_args[attribute.python_name] = python_value
