@@ -50,3 +50,33 @@ You should then be able to properly serialize dates to json-strings
     >>> pyckson.dumps(Foo(datetime(2018, 3, 8, 13, 58, 0)))
     '{"bar": "2013-05-05T13:58:00+00:00"}'
 
+
+Nulls serialisation
+-------------------
+
+By default pyckson will not serialize optional empty attributes.
+You can switch this behavior and force it to assign the null value to the generated json.
+
+::
+
+    import pyckson
+    pyckson.configure_explicit_nulls(use_explicit_nulls=True)
+
+or
+
+::
+
+    import pyckson
+
+    @pyckson.explicit_nulls()
+    class Foo:
+        def __init__(bar: Optional[str] = None):
+            self.bar = bar
+
+You should see explicit null values in the output
+
+::
+
+    >>> pyckson.dumps(Foo(bar=None))
+    '{"bar": null}'
+

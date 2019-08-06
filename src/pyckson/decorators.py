@@ -1,7 +1,7 @@
 from enum import Enum
 
 from pyckson.const import PYCKSON_TYPEINFO, PYCKSON_NAMERULE, PYCKSON_ENUM_OPTIONS, \
-    ENUM_CASE_INSENSITIVE, PYCKSON_SERIALIZER, PYCKSON_PARSER, PYCKSON_DATE_FORMATTER
+    ENUM_CASE_INSENSITIVE, PYCKSON_SERIALIZER, PYCKSON_PARSER, PYCKSON_DATE_FORMATTER, PYCKSON_EXPLICIT_NULLS
 from pyckson.dates.model import DateFormatter
 from pyckson.helpers import same_name, name_by_dict, get_name_rule
 from pyckson.model.helpers import ModelProviderImpl
@@ -81,3 +81,8 @@ def date_formatter(formatter: DateFormatter):
         return cls
 
     return class_decorator
+
+
+def explicit_nulls(cls):
+    setattr(cls, PYCKSON_EXPLICIT_NULLS, True)
+    return cls

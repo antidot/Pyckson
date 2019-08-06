@@ -1,8 +1,9 @@
-from datetime import datetime, date
-from typing import List, Dict, Set, Optional
 from unittest import TestCase
 
-from pyckson import dumps
+from datetime import datetime, date
+from typing import List, Dict, Set, Optional
+
+from pyckson import dumps, explicit_nulls
 from pyckson.dates.arrow import ArrowStringFormatter
 from pyckson.decorators import pyckson, listtype, custom_serializer, settype, date_formatter
 from pyckson.serializer import serialize
@@ -291,3 +292,15 @@ class SerializerTest(TestCase):
         result = serialize(Bar({'1': Foo(1), '2': Foo(2)}))
 
         self.assertEqual(result, {'b': {'1': {'a': 1}, '2': {'a': 2}}})
+
+    def test_use_explicit_nulls(self):
+        @pyckson
+        @explicit_nulls
+        class Foo:
+            def __init__(self, a: str = None):
+                self.a = a
+
+        result = serialize(Foo(a=None))
+
+        self.assertEqual(result, {'a': None})
+        self.assertEqual(dumps(result), '{"a": null}')

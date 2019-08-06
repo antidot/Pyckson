@@ -1,7 +1,7 @@
 from datetime import date, datetime
 
 from pyckson.const import PYCKSON_SERIALIZER
-from pyckson.dates.helpers import get_class_date_formatter
+from pyckson.dates.helpers import get_class_date_formatter, get_class_use_explicit_nulls
 from pyckson.helpers import is_base_type, get_custom_serializer
 from pyckson.providers import ModelProvider
 from pyckson.serializers.base import Serializer, BasicSerializer
@@ -30,6 +30,8 @@ class ClassSerializer(Serializer):
         for attribute in model.attributes:
             value = getattr(obj, attribute.python_name, None)
             if value is None and attribute.optional:
+                if get_class_use_explicit_nulls(obj.__class__):
+                    result[attribute.json_name] = None
                 continue
             elif value is None:
                 raise ValueError(

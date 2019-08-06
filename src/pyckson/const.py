@@ -8,6 +8,7 @@ PYCKSON_NAMERULE = '__pyckson_namerule'
 PYCKSON_SERIALIZER = '__pyckson_serializer'
 PYCKSON_PARSER = '__pyckson_parser'
 PYCKSON_DATE_FORMATTER = '__pyckson_date_formatter'
+PYCKSON_EXPLICIT_NULLS = '__pyckson_explicit_nulls'
 BASIC_TYPES = [int, str, float]
 EXTRA_TYPES = [bool, bytes, datetime.time]
 DATE_TYPES = [datetime.date, datetime.datetime]
