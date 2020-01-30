@@ -7,12 +7,10 @@ A simple python library to serialize python objects to json
 ## Concepts
 pyckson aims to be a json serializer/parser that favors convention over configuration
 
-* just add @pyckson to your classes
 * pyckson uses your __init__ signature to discover the structure of a class
 * pyckson expects all your parameters to be type annotated
-* pyckson expects that your parameters will be assigned to the object with the same name
+* pyckson expects that your parameters will be assigned to an attribute with the same name
 * pyckson transform parameter names to camelCase and use it as the json `key`
-* unfortunately python (3.4) does not allow lists to be typed, so a special decorator is used to type them
 
 
 ## Example
@@ -67,13 +65,13 @@ Documentation is available at <http://pyckson.readthedocs.io/en/latest/>
 
 opensource@antidot.net
 
-## Why not attrs
+## Why pyckson
 
-I don't like the intrusiveness of attrs, 
-especially that you have to use a special attr.ib function and parameter for each attribute.
-Also it is not friendly with pycharm for constructor and attributes autocompletion / type checking.
+I Wanted a non-intrusive library to serialize my classes.
+I also want my classes to be as close to native python as possible (for IDE completion for example).
 
-However python3.7 solves a lot of these problems, and if you target only this version, 
-dataclass + typing annotations + @attr.s decorator is probably the way to go.
+Cons : pyckson is not very flexible in serialization options, do not use it if you need to parse exeternal formats with lots of corner cases.
 
-Until then I will continue to use pyckson.
+## Noteworthy
+
+Pyckson serialize to dict-like structures, so you can use to serialize to mongo bson format and use native datetime and bytes fields.
