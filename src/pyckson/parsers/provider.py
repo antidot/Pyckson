@@ -4,7 +4,7 @@ except ImportError:
     from typing import ForwardRef
 
 from pyckson.const import BASIC_TYPES, PYCKSON_TYPEINFO, PYCKSON_ENUM_OPTIONS, ENUM_CASE_INSENSITIVE, PYCKSON_PARSER, \
-    DATE_TYPES, EXTRA_TYPES
+    DATE_TYPES, EXTRA_TYPES, get_cls_attr, has_cls_attr
 from pyckson.helpers import TypeProvider, is_list_annotation, is_set_annotation, is_enum_annotation, \
     is_basic_dict_annotation, is_typing_dict_annotation
 from pyckson.parsers.advanced import UnresolvedParser, ClassParser, CustomDeferredParser, DateParser
@@ -24,12 +24,10 @@ class ParserProviderImpl(ParserProvider):
             return BasicParser()
         if obj_type in DATE_TYPES:
             return DateParser(parent_class, obj_type)
-        if hasattr(obj_type, PYCKSON_PARSER):
-            return CustomDeferredParser(obj_type)
         if type(obj_type) is str or type(obj_type) is ForwardRef:
             return UnresolvedParser(TypeProvider(parent_class, obj_type), self.model_provider)
         if obj_type is list:
-            type_info = getattr(parent_class, PYCKSON_TYPEINFO, dict())
+            type_info = get_cls_attr(parent_class, PYCKSON_TYPEINFO, dict())
             if name_in_parent in type_info:
                 sub_type = type_info[name_in_parent]
                 return ListParser(self.get(sub_type, parent_class, name_in_parent))
@@ -37,7 +35,7 @@ class ParserProviderImpl(ParserProvider):
                 raise TypeError('list parameter {} in class {} has no subType'.format(name_in_parent,
                                                                                       parent_class.__name__))
         if obj_type is set:
-            type_info = getattr(parent_class, PYCKSON_TYPEINFO, dict())
+            type_info = get_cls_attr(parent_class, PYCKSON_TYPEINFO, dict())
             if name_in_parent in type_info:
                 sub_type = type_info[name_in_parent]
                 return SetParser(self.get(sub_type, parent_class, name_in_parent))
@@ -49,7 +47,7 @@ class ParserProviderImpl(ParserProvider):
         if is_set_annotation(obj_type):
             return SetParser(self.get(obj_type.__args__[0], parent_class, name_in_parent))
         if is_enum_annotation(obj_type):
-            options = getattr(obj_type, PYCKSON_ENUM_OPTIONS, {})
+            options = get_cls_attr(obj_type, PYCKSON_ENUM_OPTIONS, {})
             if options.get(ENUM_CASE_INSENSITIVE, False):
                 return CaseInsensitiveEnumParser(obj_type)
             else:
@@ -60,4 +58,6 @@ class ParserProviderImpl(ParserProvider):
             if obj_type.__args__[0] != str:
                 raise TypeError('typing.Dict key can only be str in class {}'.format(parent_class))
             return TypingDictParser(self.get(obj_type.__args__[1], parent_class, name_in_parent))
+        if has_cls_attr(obj_type, PYCKSON_PARSER):
+            return CustomDeferredParser(obj_type)
         return ClassParser(obj_type, self.model_provider)

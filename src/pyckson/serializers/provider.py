@@ -6,7 +6,8 @@ try:
 except ImportError:
     from typing import ForwardRef
 
-from pyckson.const import BASIC_TYPES, PYCKSON_TYPEINFO, PYCKSON_SERIALIZER, DATE_TYPES, EXTRA_TYPES
+from pyckson.const import BASIC_TYPES, PYCKSON_TYPEINFO, PYCKSON_SERIALIZER, DATE_TYPES, EXTRA_TYPES, get_cls_attr, \
+    has_cls_attr
 from pyckson.providers import SerializerProvider, ModelProvider
 from pyckson.serializers.advanced import ClassSerializer, GenericSerializer, CustomDeferredSerializer, DateSerializer
 from pyckson.serializers.base import BasicSerializer, ListSerializer, EnumSerializer, Serializer, BasicDictSerializer, \
@@ -22,12 +23,10 @@ class SerializerProviderImpl(SerializerProvider):
             return BasicSerializer()
         if obj_type in DATE_TYPES:
             return DateSerializer(parent_class, obj_type)
-        if hasattr(obj_type, PYCKSON_SERIALIZER):
-            return CustomDeferredSerializer(obj_type)
         if type(obj_type) is str or type(obj_type) is ForwardRef:
             return GenericSerializer(self.model_provider)
         if obj_type is list or obj_type is set:
-            type_info = getattr(parent_class, PYCKSON_TYPEINFO, dict())
+            type_info = get_cls_attr(parent_class, PYCKSON_TYPEINFO, dict())
             if name_in_parent in type_info:
                 sub_type = type_info[name_in_parent]
                 return ListSerializer(self.get(sub_type, parent_class, name_in_parent))
@@ -44,4 +43,6 @@ class SerializerProviderImpl(SerializerProvider):
             if obj_type.__args__[0] != str:
                 raise TypeError('typing.Dict key can only be str in class {}'.format(parent_class))
             return TypingDictSerializer(self.get(obj_type.__args__[1], parent_class, name_in_parent))
+        if has_cls_attr(obj_type, PYCKSON_SERIALIZER):
+            return CustomDeferredSerializer(obj_type)
         return ClassSerializer(self.model_provider)

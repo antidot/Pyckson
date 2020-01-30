@@ -1,4 +1,4 @@
-from pyckson.const import PYCKSON_DATE_FORMATTER, PYCKSON_EXPLICIT_NULLS
+from pyckson.const import PYCKSON_DATE_FORMATTER, PYCKSON_EXPLICIT_NULLS, has_cls_attr, get_cls_attr
 from pyckson.dates.model import DateFormatter
 from pyckson.dates.raw_formatter import RawDateFormatter
 
@@ -16,8 +16,8 @@ def get_date_formatter() -> DateFormatter:
 
 
 def get_class_date_formatter(cls) -> DateFormatter:
-    if hasattr(cls, PYCKSON_DATE_FORMATTER):
-        return getattr(cls, PYCKSON_DATE_FORMATTER)
+    if has_cls_attr(cls, PYCKSON_DATE_FORMATTER):
+        return get_cls_attr(cls, PYCKSON_DATE_FORMATTER)
     else:
         return get_date_formatter()
 
@@ -32,7 +32,7 @@ def get_use_explicit_nulls() -> bool:
 
 
 def get_class_use_explicit_nulls(cls) -> bool:
-    if hasattr(cls, PYCKSON_EXPLICIT_NULLS):
-        return getattr(cls, PYCKSON_EXPLICIT_NULLS)
+    if has_cls_attr(cls, PYCKSON_EXPLICIT_NULLS):
+        return get_cls_attr(cls, PYCKSON_EXPLICIT_NULLS)
     else:
         return get_use_explicit_nulls()

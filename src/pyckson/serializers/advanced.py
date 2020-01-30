@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-from pyckson.const import PYCKSON_SERIALIZER
+from pyckson.const import PYCKSON_SERIALIZER, has_cls_attr
 from pyckson.dates.helpers import get_class_date_formatter, get_class_use_explicit_nulls
 from pyckson.helpers import is_base_type, get_custom_serializer
 from pyckson.providers import ModelProvider
@@ -14,7 +14,7 @@ class GenericSerializer(Serializer):
     def serialize(self, obj):
         if is_base_type(obj):
             return BasicSerializer().serialize(obj)
-        elif hasattr(obj.__class__, PYCKSON_SERIALIZER):
+        elif has_cls_attr(obj.__class__, PYCKSON_SERIALIZER):
             return get_custom_serializer(obj.__class__).serialize(obj)
         else:
             return ClassSerializer(self.model_provider).serialize(obj)

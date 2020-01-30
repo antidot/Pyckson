@@ -9,13 +9,14 @@ try:
 except ImportError:
     from typing import ForwardRef
 
-from pyckson.const import PYCKSON_ATTR, BASIC_TYPES, PYCKSON_NAMERULE, PYCKSON_SERIALIZER, PYCKSON_PARSER, EXTRA_TYPES
+from pyckson.const import PYCKSON_ATTR, BASIC_TYPES, PYCKSON_NAMERULE, PYCKSON_SERIALIZER, PYCKSON_PARSER, EXTRA_TYPES, \
+    get_cls_attr
 from pyckson.parsers.base import Parser
 from pyckson.serializers.base import Serializer
 
 
 def is_pyckson(obj_type):
-    return getattr(obj_type, PYCKSON_ATTR, False)
+    return get_cls_attr(obj_type, PYCKSON_ATTR, False)
 
 
 def name_by_dict(name_mapping, default_rule):
@@ -37,7 +38,7 @@ def same_name(python_name):
 
 
 def get_name_rule(obj_type):
-    return getattr(obj_type, PYCKSON_NAMERULE, camel_case_name)
+    return get_cls_attr(obj_type, PYCKSON_NAMERULE, camel_case_name)
 
 
 def is_base_type_with_cast(obj):
@@ -67,14 +68,14 @@ class TypeProvider:
 
 
 def get_custom_serializer(cls) -> Serializer:
-    serializer = getattr(cls, PYCKSON_SERIALIZER)
+    serializer = get_cls_attr(cls, PYCKSON_SERIALIZER)
     if isinstance(serializer, str):
         serializer = TypeProvider(cls, serializer).get()
     return serializer()
 
 
 def get_custom_parser(cls) -> Parser:
-    parser = getattr(cls, PYCKSON_PARSER)
+    parser = get_cls_attr(cls, PYCKSON_PARSER)
     if isinstance(parser, str):
         parser = TypeProvider(cls, parser).get()
     return parser()

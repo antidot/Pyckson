@@ -1,6 +1,6 @@
 from inspect import Parameter, getmembers, signature
 
-from pyckson.const import PYCKSON_TYPEINFO
+from pyckson.const import PYCKSON_TYPEINFO, get_cls_attr
 from pyckson.helpers import get_name_rule
 from pyckson.model.model import PycksonModel, PycksonAttribute
 from pyckson.model.union import inspect_optional_typing
@@ -12,7 +12,7 @@ class PycksonModelBuilder:
         self.cls = cls
         self.serializer_provider = serializer_provider
         self.parser_provider = parser_provider
-        self.type_info = getattr(cls, PYCKSON_TYPEINFO, dict())
+        self.type_info = get_cls_attr(cls, PYCKSON_TYPEINFO, dict())
         self.name_rule = get_name_rule(cls)
 
     def find_constructor(self):
