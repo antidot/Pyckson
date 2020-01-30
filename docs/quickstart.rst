@@ -9,12 +9,26 @@ Pyckson will assume that the classes you want to transform are written in a cert
  * All class fields must be named parameters in your __init__ method
  * All parameters must be assigned to the object with the same name
  * All parameters must be type annotated
+
 ::
 
     class Example:
         def __init__(self, foo: str, bar: List[int]):
             self.foo = foo
             self.bar = bar
+
+
+Dataclasses
+-----------
+
+Pyckson also works with dataclasses in python3.7+
+
+::
+
+    @dataclass
+    class Example:
+        foo: str
+        bar: List[int]
 
 
 Conventions
