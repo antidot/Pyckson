@@ -6,4 +6,4 @@ from pyckson.serializer import serialize
 from pyckson.serializers.base import Serializer
 from pyckson.dates.helpers import configure_date_formatter, configure_explicit_nulls
 
-__version__ = '1.7.0'
+__version__ = '1.8.0'
