@@ -25,4 +25,4 @@ def set_cls_attr(cls, attr, value):
 
 
 def has_cls_attr(cls, attr):
-    return hasattr(cls, attr.format(cls=cls.__name__))
+    return hasattr(cls, '__name__') and hasattr(cls, attr.format(cls=cls.__name__))

@@ -1,7 +1,6 @@
-from unittest import TestCase
-
 from datetime import datetime, date
-from typing import List, Dict, Set, Optional
+from typing import List, Dict, Set, Optional, Union
+from unittest import TestCase
 
 from pyckson import dumps, explicit_nulls
 from pyckson.dates.arrow import ArrowStringFormatter
@@ -304,3 +303,18 @@ class SerializerTest(TestCase):
 
         self.assertEqual(result, {'a': None})
         self.assertEqual(dumps(result), '{"a": null}')
+
+    def test_should_be_able_to_serialize_union_type(self):
+        class X:
+            def __init__(self, x: str):
+                self.x = x
+
+        class Y:
+            def __init__(self, y: str):
+                self.y = y
+
+        class Foo:
+            def __init__(self, foo: Union[X, Y]):
+                self.foo = foo
+
+        assert serialize(Foo(X('a'))) == {'foo': {'x': 'a'}}
