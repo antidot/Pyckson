@@ -1,6 +1,7 @@
 from inspect import Parameter, getmembers, signature
 
 from pyckson.const import PYCKSON_TYPEINFO, get_cls_attr
+from pyckson.defaults import apply_defaults
 from pyckson.helpers import get_name_rule
 from pyckson.model.model import PycksonModel, PycksonAttribute
 from pyckson.model.union import inspect_optional_typing
@@ -10,6 +11,7 @@ from pyckson.providers import SerializerProvider, ParserProvider
 class PycksonModelBuilder:
     def __init__(self, cls, serializer_provider: SerializerProvider, parser_provider: ParserProvider):
         self.cls = cls
+        apply_defaults(cls)
         self.serializer_provider = serializer_provider
         self.parser_provider = parser_provider
         self.type_info = get_cls_attr(cls, PYCKSON_TYPEINFO, dict())

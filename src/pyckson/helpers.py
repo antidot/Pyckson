@@ -10,7 +10,7 @@ except ImportError:
     from typing import ForwardRef
 
 from pyckson.const import PYCKSON_ATTR, BASIC_TYPES, PYCKSON_NAMERULE, PYCKSON_SERIALIZER, PYCKSON_PARSER, EXTRA_TYPES, \
-    get_cls_attr
+    get_cls_attr, set_cls_attr, PYCKSON_RULE_ATTR
 from pyckson.parsers.base import Parser
 from pyckson.serializers.base import Serializer
 
@@ -125,3 +125,11 @@ def is_typing_dict_annotation(annotation):
             return issubclass(annotation, Dict)
         except TypeError:
             return False
+
+
+def using(attr):
+    def class_decorator(cls):
+        set_cls_attr(cls, PYCKSON_RULE_ATTR, attr)
+        return cls
+
+    return class_decorator
