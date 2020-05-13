@@ -4,7 +4,7 @@ Advanced Usage
 Defaults
 --------
 
-If you want to apply a specific pyckson behavior without having to annotate all your classes, you can configure a global decorator using :py:func:`pyckson.set_defautls`.
+If you want to apply a specific pyckson behavior without having to annotate all your classes, you can configure a global decorator using :py:func:`pyckson.set_defaults`.
 
 Most class level decorators are viable candidates. You can pass multiple arguments, or call the function multiple time to accumulate behaviors.
 
@@ -29,7 +29,7 @@ Dates
 
 By default Pyckson does not apply any special treatment to date objects, meaning that if you use serialize you will get a dictionnary with date-type values, and json.dumps will not be able to serialize your object.
 
-You can use the :py:func:`pyckson.date_formatter` decorator to override serialization behavior for fields of a class (it does not apply recursively), or configure it globally with :py:func:`pyckson.set_defautls`.
+You can use the :py:func:`pyckson.date_formatter` decorator to override serialization behavior for fields of a class (it does not apply recursively), or configure it globally with :py:func:`pyckson.set_defaults`.
 
 Custom Date Formatters
 ----------------------
