@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from pyckson.helpers import is_list_annotation, is_set_annotation, is_enum_annotation, is_basic_dict_annotation, \
     is_typing_dict_annotation
 
@@ -11,7 +13,7 @@ from pyckson.const import BASIC_TYPES, PYCKSON_TYPEINFO, PYCKSON_SERIALIZER, DAT
 from pyckson.providers import SerializerProvider, ModelProvider
 from pyckson.serializers.advanced import ClassSerializer, GenericSerializer, CustomDeferredSerializer, DateSerializer
 from pyckson.serializers.base import BasicSerializer, ListSerializer, EnumSerializer, Serializer, BasicDictSerializer, \
-    TypingDictSerializer
+    TypingDictSerializer, DecimalSerializer
 
 
 class SerializerProviderImpl(SerializerProvider):
@@ -23,6 +25,8 @@ class SerializerProviderImpl(SerializerProvider):
             return BasicSerializer()
         if obj_type in DATE_TYPES:
             return DateSerializer(parent_class, obj_type)
+        if obj_type is Decimal:
+            return DecimalSerializer()
         if type(obj_type) is str or type(obj_type) is ForwardRef:
             return GenericSerializer(self.model_provider)
         if obj_type is list or obj_type is set:

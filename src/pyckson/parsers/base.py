@@ -1,3 +1,6 @@
+from decimal import Decimal
+
+
 class Parser:
     def parse(self, json_value):
         pass
@@ -59,3 +62,8 @@ class TypingDictParser(Parser):
 
     def parse(self, json_value):
         return {k: self.value_parser.parse(v) for k, v in json_value.items()}
+
+
+class DecimalParser(Parser):
+    def parse(self, json_value):
+        return Decimal(json_value)

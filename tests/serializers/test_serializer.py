@@ -1,4 +1,5 @@
 from datetime import datetime, date
+from decimal import Decimal
 from typing import List, Dict, Set, Optional, Union
 from unittest import TestCase
 
@@ -318,3 +319,12 @@ class SerializerTest(TestCase):
                 self.foo = foo
 
         assert serialize(Foo(X('a'))) == {'foo': {'x': 'a'}}
+
+
+def test_should_serialize_decimal():
+    class Foo:
+        def __init__(self, x: Decimal):
+            self.x = x
+
+    pi = '3.141592653589793238462643383279502884197'
+    assert serialize(Foo(Decimal(pi))) == {'x': pi}

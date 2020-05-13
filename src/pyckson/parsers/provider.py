@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 try:
     from typing import _ForwardRef as ForwardRef
 except ImportError:
@@ -9,7 +11,7 @@ from pyckson.helpers import TypeProvider, is_list_annotation, is_set_annotation,
     is_basic_dict_annotation, is_typing_dict_annotation
 from pyckson.parsers.advanced import UnresolvedParser, ClassParser, CustomDeferredParser, DateParser
 from pyckson.parsers.base import Parser, BasicParser, ListParser, CaseInsensitiveEnumParser, DefaultEnumParser, \
-    BasicDictParser, SetParser, BasicParserWithCast, TypingDictParser
+    BasicDictParser, SetParser, BasicParserWithCast, TypingDictParser, DecimalParser
 from pyckson.providers import ParserProvider, ModelProvider
 
 
@@ -24,6 +26,8 @@ class ParserProviderImpl(ParserProvider):
             return BasicParser()
         if obj_type in DATE_TYPES:
             return DateParser(parent_class, obj_type)
+        if obj_type is Decimal:
+            return DecimalParser()
         if type(obj_type) is str or type(obj_type) is ForwardRef:
             return UnresolvedParser(TypeProvider(parent_class, obj_type), self.model_provider)
         if obj_type is list:

@@ -1,5 +1,6 @@
 import json
 from datetime import datetime, date
+from decimal import Decimal
 from enum import Enum
 from typing import List, Dict, Set, Optional
 from unittest import TestCase
@@ -341,3 +342,12 @@ class ParserTest(TestCase):
 
         result = parse(Bar, {'y': None})
         self.assertEqual(result.y, None)
+
+
+def test_should_parse_decimal():
+    class Foo:
+        def __init__(self, x: Decimal):
+            self.x = x
+
+    result = parse(Foo, {'x': '3.141592653589793238462643383279502884197'})
+    assert result.x == Decimal('3.141592653589793238462643383279502884197')

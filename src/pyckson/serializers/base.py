@@ -32,3 +32,8 @@ class TypingDictSerializer(Serializer):
 
     def serialize(self, obj):
         return {k: self.value_serializer.serialize(v) for k, v in obj.items()}
+
+
+class DecimalSerializer(Serializer):
+    def serialize(self, obj):
+        return str(obj)
