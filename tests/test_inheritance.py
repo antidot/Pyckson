@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 import pyckson
+from pyckson import no_camel_case, serialize
 
 
 def test_bug_14():
@@ -19,6 +20,39 @@ def test_bug_14():
 
     assert pyckson.loads(Parent, x) == Parent('toto', 'plip')
     assert pyckson.loads(Child, y) == Child('toto', None)
+
+
+def test_class_should_inherit_pyckson_parameters():
+    @dataclass
+    @no_camel_case
+    class Parent:
+        my_attribute: str
+
+    @dataclass
+    class Child(Parent):
+        foo_bar: str
+
+    assert serialize(Parent('foo')) == {'my_attribute': 'foo'}
+    assert serialize(Child('foo', 'bar')) == {'my_attribute': 'foo', 'foo_bar': 'bar'}
+
+
+def test_bug_18():
+    @pyckson.rename(links="_links")
+    @dataclass
+    class Parent:
+        links: str
+
+    @dataclass
+    class Child(Parent):
+        pass
+
+    json = '{"_links":"https://google.fr"}'
+
+    obj = pyckson.loads(Parent, json)
+    assert obj.links == 'https://google.fr'
+
+    obj = pyckson.loads(Child, json)
+    assert obj.links == 'https://google.fr'
 
 
 def test_mangled_attributes():
