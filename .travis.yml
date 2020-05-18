@@ -8,3 +8,15 @@ matrix:
 script:
   - pip install .
   - cd tests && python3 -m pytest
+
+before_deploy:
+  - cd ..
+deploy:
+  provider: pypi
+  user: __token__
+  password:
+    secure: E9oG4bti2Nsog9IRt3YTJCD/dVMksqCbOKVBq9RLdD0mOpFJuj7g4y5lop9RAg4pyWfqT680f9gEcZsuwCiedP1Lt330DQ1q+1+L4+j1DaBKyQaaHWyPSRxist7+n39Iv8eAkr+vfqNZozbI9r7zJXAWXStpG4hQ/Z4gRyzs9Aco3e0O2GAHafCd72yrwCfbtICpI2haUido0rmjRLHAGL50fSyjinuhX/6sohlI6IUZ2nRMuzMIB0cqH8YZFEA39znx80p70iRPNzcNCUI644IlpuDJX5nD6yRWMmmUNX0Bn+XTFFlA02X1BvOR0fjYjRCGGvhICNmCAUAsXicn/t57Z26BJNBUWGgwMwLzG7vJ1eqVwSvM5YIycZbhGWZavnSjLOBpkYE/d2jA4lrbQ352oyPbqumucx22M6kY142AEidrRiblcxSGBHpA/MhlBjLKLF+T859hms14soILACFcgl4bXv2JVwcoJ+xKCbHWiLucAp6ueku+bKqloNJdlILXzrc98wvnnt+pr5SsRo7e1LhYJhqRXBe/kPowy0ImnlIgboRoxHHFyU778FZ1vkAipBpeSS+NUVcjN2tVzRGWZ6SPJXkc2MARP8V5m9Zc9YHQLdSwmnOtzExe8B/nxbdCP03YeprfDrvNb7XLjShMawRp/vEKh+qVW52YXws=
+  on:
+    tags: true
+  distributions: sdist bdist_wheel
+  skip_existing: true
