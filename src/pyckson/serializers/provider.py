@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from pyckson.defaults import apply_enum_default
 from pyckson.helpers import is_list_annotation, is_set_annotation, is_enum_annotation, is_basic_dict_annotation, \
     is_typing_dict_annotation
 
@@ -9,11 +10,11 @@ except ImportError:
     from typing import ForwardRef
 
 from pyckson.const import BASIC_TYPES, PYCKSON_TYPEINFO, PYCKSON_SERIALIZER, DATE_TYPES, EXTRA_TYPES, get_cls_attr, \
-    has_cls_attr
+    has_cls_attr, PYCKSON_ENUM_OPTIONS, ENUM_USE_VALUES
 from pyckson.providers import SerializerProvider, ModelProvider
 from pyckson.serializers.advanced import ClassSerializer, GenericSerializer, CustomDeferredSerializer, DateSerializer
 from pyckson.serializers.base import BasicSerializer, ListSerializer, EnumSerializer, Serializer, BasicDictSerializer, \
-    TypingDictSerializer, DecimalSerializer
+    TypingDictSerializer, DecimalSerializer, ValuesEnumSerializer
 
 
 class SerializerProviderImpl(SerializerProvider):
@@ -40,6 +41,10 @@ class SerializerProviderImpl(SerializerProvider):
         if is_list_annotation(obj_type) or is_set_annotation(obj_type):
             return ListSerializer(self.get(obj_type.__args__[0], parent_class, name_in_parent))
         if is_enum_annotation(obj_type):
+            apply_enum_default(obj_type)
+            options = get_cls_attr(obj_type, PYCKSON_ENUM_OPTIONS, {})
+            if options.get(ENUM_USE_VALUES, False):
+                return ValuesEnumSerializer()
             return EnumSerializer()
         if is_basic_dict_annotation(obj_type):
             return BasicDictSerializer()

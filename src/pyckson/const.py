@@ -15,6 +15,7 @@ EXTRA_TYPES = [bool, bytes, datetime.time]
 DATE_TYPES = [datetime.date, datetime.datetime]
 
 ENUM_CASE_INSENSITIVE = 'case-insensitive'
+ENUM_USE_VALUES = 'use-values'
 
 
 def get_cls_attr(cls, attr, default=None):

@@ -1,9 +1,10 @@
 from datetime import datetime
+from enum import Enum
 from typing import Optional
 
 import pytest
 
-from pyckson import serialize, no_camel_case, explicit_nulls, use_camel_case, date_formatter
+from pyckson import serialize, no_camel_case, explicit_nulls, use_camel_case, date_formatter, enumvalues, parse
 from pyckson.dates.arrow import ArrowStringFormatter
 from pyckson.defaults import reset_defaults, set_defaults
 
@@ -59,3 +60,18 @@ def test_date_default(defaults):
     set_defaults(date_formatter(ArrowStringFormatter()))
 
     assert serialize(Foo(datetime(2013, 5, 5, 12, 30, 45))) == {'day': '2013-05-05T12:30:45+00:00'}
+
+
+def test_enum_values_default(defaults):
+    class MyEnum(Enum):
+        FOO = 1
+        BAR = 2
+
+    class Foo:
+        def __init__(self, e: MyEnum):
+            self.e = e
+
+    set_defaults(enumvalues)
+
+    assert serialize(Foo(MyEnum.FOO)) == {'e': 1}
+    assert parse(Foo, {'e': 2}).e == MyEnum.BAR

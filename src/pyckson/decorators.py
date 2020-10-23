@@ -2,7 +2,7 @@ from enum import Enum
 
 from pyckson.const import PYCKSON_TYPEINFO, PYCKSON_NAMERULE, PYCKSON_ENUM_OPTIONS, \
     ENUM_CASE_INSENSITIVE, PYCKSON_SERIALIZER, PYCKSON_PARSER, PYCKSON_DATE_FORMATTER, PYCKSON_EXPLICIT_NULLS, \
-    get_cls_attr, set_cls_attr
+    get_cls_attr, set_cls_attr, ENUM_USE_VALUES
 from pyckson.dates.model import DateFormatter
 from pyckson.helpers import same_name, name_by_dict, get_name_rule, camel_case_name, using
 from pyckson.model.helpers import ModelProviderImpl
@@ -35,6 +35,17 @@ def caseinsensitive(cls):
         raise TypeError('caseinsensitive decorator can only be applied to subclasses of enum.Enum')
     enum_options = get_cls_attr(cls, PYCKSON_ENUM_OPTIONS, {})
     enum_options[ENUM_CASE_INSENSITIVE] = True
+    set_cls_attr(cls, PYCKSON_ENUM_OPTIONS, enum_options)
+    return cls
+
+
+@using(PYCKSON_ENUM_OPTIONS)
+def enumvalues(cls):
+    """Annotation function to set an Enum to use values instead of name for serialization"""
+    if not issubclass(cls, Enum):
+        raise TypeError('enumvalues decorator can only be applied to subclasses of enum.Enum')
+    enum_options = get_cls_attr(cls, PYCKSON_ENUM_OPTIONS, {})
+    enum_options[ENUM_USE_VALUES] = True
     set_cls_attr(cls, PYCKSON_ENUM_OPTIONS, enum_options)
     return cls
 

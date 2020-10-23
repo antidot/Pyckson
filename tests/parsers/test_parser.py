@@ -7,7 +7,7 @@ from unittest import TestCase
 
 from pyckson import date_formatter, loads
 from pyckson.dates.arrow import ArrowStringFormatter
-from pyckson.decorators import pyckson, listtype, caseinsensitive, custom_parser, settype
+from pyckson.decorators import pyckson, listtype, caseinsensitive, custom_parser, settype, enumvalues
 from pyckson.parser import parse
 from pyckson.parsers.base import Parser
 
@@ -351,3 +351,29 @@ def test_should_parse_decimal():
 
     result = parse(Foo, {'x': '3.141592653589793238462643383279502884197'})
     assert result.x == Decimal('3.141592653589793238462643383279502884197')
+
+
+def test_parse_int_enum_values():
+    @enumvalues
+    class MyEnum(Enum):
+        FOO = 1
+        BAR = 2
+
+    class Foo:
+        def __init__(self, e: MyEnum):
+            self.e = e
+
+    assert parse(Foo, {'e': 2}).e == MyEnum.BAR
+
+
+def test_parse_str_enum_values():
+    @enumvalues
+    class MyEnum(Enum):
+        FOO = 'fooo'
+        BAR = 'baar'
+
+    class Foo:
+        def __init__(self, e: MyEnum):
+            self.e = e
+
+    assert parse(Foo, {'e': 'fooo'}).e == MyEnum.FOO

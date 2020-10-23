@@ -21,6 +21,11 @@ class EnumSerializer(Serializer):
         return obj.name
 
 
+class ValuesEnumSerializer(Serializer):
+    def serialize(self, obj):
+        return obj.value
+
+
 class BasicDictSerializer(Serializer):
     def serialize(self, obj):
         return obj

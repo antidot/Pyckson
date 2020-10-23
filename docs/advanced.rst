@@ -24,6 +24,10 @@ Sometimes it's convenient to parse enums in a case-insensitive way, to do so you
 
 .. autofunction:: pyckson.caseinsensitive
 
+Pyckson can also use the value part of the enum to perform parsing/serialization with the :py:func:`pyckson.enumvalues` decorator.
+
+.. autofunction:: pyckson.enumvalues
+
 Dates
 -----
 

@@ -1,17 +1,19 @@
 from decimal import Decimal
 
+from pyckson.defaults import apply_enum_default
+
 try:
     from typing import _ForwardRef as ForwardRef
 except ImportError:
     from typing import ForwardRef
 
 from pyckson.const import BASIC_TYPES, PYCKSON_TYPEINFO, PYCKSON_ENUM_OPTIONS, ENUM_CASE_INSENSITIVE, PYCKSON_PARSER, \
-    DATE_TYPES, EXTRA_TYPES, get_cls_attr, has_cls_attr
+    DATE_TYPES, EXTRA_TYPES, get_cls_attr, has_cls_attr, ENUM_USE_VALUES
 from pyckson.helpers import TypeProvider, is_list_annotation, is_set_annotation, is_enum_annotation, \
     is_basic_dict_annotation, is_typing_dict_annotation
 from pyckson.parsers.advanced import UnresolvedParser, ClassParser, CustomDeferredParser, DateParser
 from pyckson.parsers.base import Parser, BasicParser, ListParser, CaseInsensitiveEnumParser, DefaultEnumParser, \
-    BasicDictParser, SetParser, BasicParserWithCast, TypingDictParser, DecimalParser
+    BasicDictParser, SetParser, BasicParserWithCast, TypingDictParser, DecimalParser, ValuesEnumParser
 from pyckson.providers import ParserProvider, ModelProvider
 
 
@@ -51,11 +53,13 @@ class ParserProviderImpl(ParserProvider):
         if is_set_annotation(obj_type):
             return SetParser(self.get(obj_type.__args__[0], parent_class, name_in_parent))
         if is_enum_annotation(obj_type):
+            apply_enum_default(obj_type)
             options = get_cls_attr(obj_type, PYCKSON_ENUM_OPTIONS, {})
+            if options.get(ENUM_USE_VALUES, False):
+                return ValuesEnumParser(obj_type)
             if options.get(ENUM_CASE_INSENSITIVE, False):
                 return CaseInsensitiveEnumParser(obj_type)
-            else:
-                return DefaultEnumParser(obj_type)
+            return DefaultEnumParser(obj_type)
         if is_basic_dict_annotation(obj_type):
             return BasicDictParser()
         if is_typing_dict_annotation(obj_type):

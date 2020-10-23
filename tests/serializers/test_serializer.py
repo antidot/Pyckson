@@ -1,9 +1,10 @@
 from datetime import datetime, date
 from decimal import Decimal
+from enum import Enum
 from typing import List, Dict, Set, Optional, Union
 from unittest import TestCase
 
-from pyckson import dumps, explicit_nulls
+from pyckson import dumps, explicit_nulls, enumvalues
 from pyckson.dates.arrow import ArrowStringFormatter
 from pyckson.decorators import pyckson, listtype, custom_serializer, settype, date_formatter
 from pyckson.serializer import serialize
@@ -328,3 +329,29 @@ def test_should_serialize_decimal():
 
     pi = '3.141592653589793238462643383279502884197'
     assert serialize(Foo(Decimal(pi))) == {'x': pi}
+
+
+def test_serialize_int_enum_values():
+    @enumvalues
+    class MyEnum(Enum):
+        FOO = 1
+        BAR = 2
+
+    class Foo:
+        def __init__(self, e: MyEnum):
+            self.e = e
+
+    assert serialize(Foo(MyEnum.BAR)) == {'e': 2}
+
+
+def test_serialize_str_enum_values():
+    @enumvalues
+    class MyEnum(Enum):
+        FOO = 'fooo'
+        BAR = 'baar'
+
+    class Foo:
+        def __init__(self, e: MyEnum):
+            self.e = e
+
+    assert serialize(Foo(MyEnum.BAR)) == {'e': 'baar'}

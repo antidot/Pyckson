@@ -51,6 +51,14 @@ class CaseInsensitiveEnumParser(Parser):
         return self.values[value.lower()]
 
 
+class ValuesEnumParser(Parser):
+    def __init__(self, cls):
+        self.cls = cls
+
+    def parse(self, value):
+        return self.cls(value)
+
+
 class BasicDictParser(Parser):
     def parse(self, json_value):
         return json_value
