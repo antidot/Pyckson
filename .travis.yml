@@ -1,15 +1,14 @@
 language: python
 matrix:
   include:
-    - python: "3.5"
-    - python: "3.6"
-    - python: "3.7"
-    - python: "3.8"
-    - python: "3.9"
+    - python: '3.5'
+    - python: '3.6'
+    - python: '3.7'
+    - python: '3.8'
+    - python: '3.9'
 script:
   - pip install .
   - cd tests && python3 -m pytest
-
 before_deploy:
   - cd ..
 deploy:
@@ -17,7 +16,7 @@ deploy:
   provider: pypi
   user: __token__
   password:
-    secure: E9oG4bti2Nsog9IRt3YTJCD/dVMksqCbOKVBq9RLdD0mOpFJuj7g4y5lop9RAg4pyWfqT680f9gEcZsuwCiedP1Lt330DQ1q+1+L4+j1DaBKyQaaHWyPSRxist7+n39Iv8eAkr+vfqNZozbI9r7zJXAWXStpG4hQ/Z4gRyzs9Aco3e0O2GAHafCd72yrwCfbtICpI2haUido0rmjRLHAGL50fSyjinuhX/6sohlI6IUZ2nRMuzMIB0cqH8YZFEA39znx80p70iRPNzcNCUI644IlpuDJX5nD6yRWMmmUNX0Bn+XTFFlA02X1BvOR0fjYjRCGGvhICNmCAUAsXicn/t57Z26BJNBUWGgwMwLzG7vJ1eqVwSvM5YIycZbhGWZavnSjLOBpkYE/d2jA4lrbQ352oyPbqumucx22M6kY142AEidrRiblcxSGBHpA/MhlBjLKLF+T859hms14soILACFcgl4bXv2JVwcoJ+xKCbHWiLucAp6ueku+bKqloNJdlILXzrc98wvnnt+pr5SsRo7e1LhYJhqRXBe/kPowy0ImnlIgboRoxHHFyU778FZ1vkAipBpeSS+NUVcjN2tVzRGWZ6SPJXkc2MARP8V5m9Zc9YHQLdSwmnOtzExe8B/nxbdCP03YeprfDrvNb7XLjShMawRp/vEKh+qVW52YXws=
+    secure: EyJ+iqh4EzCxkfsyeM3jNgCH0k5LQgmG+A1RYSWQO6fvO4XPrZLhebEyIluc+q6lUPVUFJF0Ml0Hln2/Xh4y9LbGBhXOKXbMmrsH2W/d1Nh7mjWnKxWbufOXamgYVH4wPPSIdnsSQVbB3+1OXHOOlPtx4sA+HTUCXs3QY+moPpZC8TflI8yexXItORYyDV3xRr2ISSQw4BZQBnpa/DEY5ema+nyUC8DK7F0TMlImoCxDfpJvkT00VMWrAtkMZUchWbJtvVQdGoLGW+GT8oX+dbCD4WTfI4pRVUIzY2eGje/ePR0j30M/A1/hpcxenaROPD/Q5XI1rwNPMLn76JqNmvUfHzOl2vFZEPkONhxs2lBdASiQyvDWwumn89RgdjURC3QQy3Rw3lJWF3CTGoi0uHr4ojIOL6MuXei7fyFcCkFaoJ5+EjgZSqCCHWlGAmAIBpZzXtj0XDgsvFeSkVOjVu7Rrqg+D5VRW6UO4+MmVxit9IxtKhsb+Zrh7EQ1GcCOHGX7D6Tc05rOB/3B52SEgb5dfjLlrRmWrO3bmZO6xW2gRdoxzDTgVEA23WjYQO5zJKMSko5+o9imhh6+S2wDQddgyf97uG2D3aTxbmnhiADPZzCyZpSYLja1d+IHn0n0Gn/nldqcwpdSM0QJIy8LSu9ouDPika57oyhDW0Wl9aw=
   on:
     tags: true
   distributions: sdist bdist_wheel
