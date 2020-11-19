@@ -13,6 +13,7 @@ script:
 before_deploy:
   - cd ..
 deploy:
+  skip_cleanup: true
   provider: pypi
   user: __token__
   password:
