@@ -13,7 +13,7 @@ setup(name='Pyckson',
       url='https://github.com/antidot/Pyckson',
       author='Jean Giard',
       author_email='opensource@antidot.net',
-      license='LGPL',
+      license='LGPL-2.1-or-later',
       classifier=[
           'Development Status :: 3 - Alpha',
           'Intended Audience :: Developers',
