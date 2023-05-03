@@ -86,7 +86,7 @@ def is_list_annotation(annotation):
         return annotation._name == 'List'
     else:
         try:
-            return issubclass(annotation, List)
+            return issubclass(annotation, List) or annotation.__name__ == 'list'
         except TypeError:
             return False
 
