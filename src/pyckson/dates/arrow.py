@@ -24,10 +24,10 @@ class ArrowTimestampFormatter(DateFormatter):
         return arrow.get(value).naive
 
     def serialize_datetime(self, value: datetime):
-        return arrow.Arrow.fromdatetime(value).timestamp()
+        return arrow.Arrow.fromdatetime(value).int_timestamp
 
     def parse_date(self, value) -> date:
         return arrow.get(value).date()
 
     def serialize_date(self, value: date):
-        return arrow.Arrow.fromdate(value).timestamp()
+        return arrow.Arrow.fromdate(value).int_timestamp
