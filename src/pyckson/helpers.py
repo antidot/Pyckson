@@ -96,7 +96,7 @@ def is_set_annotation(annotation):
         return annotation._name == 'Set'
     else:
         try:
-            return issubclass(annotation, Set)
+            return issubclass(annotation, Set) or annotation.__name__ == 'set'
         except TypeError:
             return False
 
