@@ -122,7 +122,7 @@ def is_typing_dict_annotation(annotation):
         return annotation._name == 'Dict'
     else:
         try:
-            return issubclass(annotation, Dict)
+            return issubclass(annotation, Dict) or annotation.__name__ == 'dict'
         except TypeError:
             return False
 
