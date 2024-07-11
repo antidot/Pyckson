@@ -1,5 +1,6 @@
 from decimal import Decimal
 from enum import Enum
+from typing import List
 
 
 class Parser:
@@ -79,3 +80,14 @@ class TypingDictParser(Parser):
 class DecimalParser(Parser):
     def parse(self, json_value):
         return Decimal(json_value)
+
+
+class UnionParser(Parser):
+    def __init__(self, value_parsers: List[Parser]):
+        self.value_parsers = value_parsers
+
+    def parse(self, json_value):
+        for parser in self.value_parsers:
+            if hasattr(parser, 'cls') and isinstance(json_value, parser.cls):
+                return parser.parse(json_value)
+        raise TypeError('{} is not compatible with Union type in Pyckson.'.format({json_value}))
