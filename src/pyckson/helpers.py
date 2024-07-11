@@ -127,6 +127,12 @@ def is_typing_dict_annotation(annotation):
             return False
 
 
+def is_union_annotation(annotation) -> bool:
+    if hasattr(annotation, '__name__'):
+        return annotation.__name__ == 'Union'
+    return False
+
+
 def using(attr):
     def class_decorator(cls):
         set_cls_attr(cls, PYCKSON_RULE_ATTR, attr)
