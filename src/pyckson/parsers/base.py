@@ -1,4 +1,5 @@
 from decimal import Decimal
+from enum import Enum
 
 
 class Parser:
@@ -22,6 +23,7 @@ class BasicParserWithCast(Parser):
 class ListParser(Parser):
     def __init__(self, sub_parser: Parser):
         self.sub_parser = sub_parser
+        self.cls = list
 
     def parse(self, json_value):
         return [self.sub_parser.parse(item) for item in json_value]
@@ -30,6 +32,7 @@ class ListParser(Parser):
 class SetParser(Parser):
     def __init__(self, sub_parser: Parser):
         self.sub_parser = sub_parser
+        self.cls = set
 
     def parse(self, json_value):
         return {self.sub_parser.parse(item) for item in json_value}
@@ -46,6 +49,7 @@ class DefaultEnumParser(Parser):
 class CaseInsensitiveEnumParser(Parser):
     def __init__(self, cls):
         self.values = {member.name.lower(): member for member in cls}
+        self.cls = Enum
 
     def parse(self, value):
         return self.values[value.lower()]
