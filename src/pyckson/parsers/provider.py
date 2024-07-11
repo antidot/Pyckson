@@ -10,10 +10,10 @@ except ImportError:
 from pyckson.const import BASIC_TYPES, PYCKSON_TYPEINFO, PYCKSON_ENUM_OPTIONS, ENUM_CASE_INSENSITIVE, PYCKSON_PARSER, \
     DATE_TYPES, EXTRA_TYPES, get_cls_attr, has_cls_attr, ENUM_USE_VALUES
 from pyckson.helpers import TypeProvider, is_list_annotation, is_set_annotation, is_enum_annotation, \
-    is_basic_dict_annotation, is_typing_dict_annotation
+    is_basic_dict_annotation, is_typing_dict_annotation, is_union_annotation
 from pyckson.parsers.advanced import UnresolvedParser, ClassParser, CustomDeferredParser, DateParser
 from pyckson.parsers.base import Parser, BasicParser, ListParser, CaseInsensitiveEnumParser, DefaultEnumParser, \
-    BasicDictParser, SetParser, BasicParserWithCast, TypingDictParser, DecimalParser, ValuesEnumParser
+    BasicDictParser, SetParser, BasicParserWithCast, TypingDictParser, DecimalParser, ValuesEnumParser, UnionParser
 from pyckson.providers import ParserProvider, ModelProvider
 
 
@@ -66,6 +66,9 @@ class ParserProviderImpl(ParserProvider):
             if obj_type.__args__[0] != str:
                 raise TypeError('typing.Dict key can only be str in class {}'.format(parent_class))
             return TypingDictParser(self.get(obj_type.__args__[1], parent_class, name_in_parent))
+        if is_union_annotation(obj_type):
+            return UnionParser([self.get(obj_type_arg, parent_class, name_in_parent)
+                                for obj_type_arg in obj_type.__args__])
         if has_cls_attr(obj_type, PYCKSON_PARSER):
             return CustomDeferredParser(obj_type)
         return ClassParser(obj_type, self.model_provider)
