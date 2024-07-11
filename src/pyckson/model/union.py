@@ -20,5 +20,14 @@ def inspect_optional_typing(annotation) -> Tuple[bool, type]:
     else:
         union_params = annotation.__union_params__
 
-    is_optional = len(union_params) == 2 and isinstance(None, union_params[1])
-    return is_optional, union_params[0]
+    try:
+        is_optional = isinstance(None, union_params[-1])
+    except TypeError:
+        is_optional = False
+    if is_optional:
+        union_param = Union[union_params[:-1]]
+    elif len(union_params) > 1:
+        union_param = Union[union_params]
+    else:
+        union_param = union_params[0]
+    return is_optional, union_param
