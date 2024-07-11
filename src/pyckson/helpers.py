@@ -2,7 +2,7 @@ import re
 import sys
 from enum import Enum
 
-from typing import List, Set, Dict
+from typing import List, Set, Dict, Union
 
 try:
     from typing import _ForwardRef as ForwardRef
@@ -125,6 +125,12 @@ def is_typing_dict_annotation(annotation):
             return issubclass(annotation, Dict) or annotation.__name__ == 'dict'
         except TypeError:
             return False
+
+
+def is_union_annotation(annotation) -> bool:
+    if hasattr(annotation, '__origin__'):
+        return annotation.__origin__ == Union
+    return False
 
 
 def using(attr):
