@@ -2,7 +2,7 @@ import json
 from datetime import datetime, date
 from decimal import Decimal
 from enum import Enum
-from typing import List, Dict, Set, Optional
+from typing import List, Dict, Set, Optional, Union
 from unittest import TestCase
 
 from pyckson import date_formatter, loads
@@ -377,3 +377,27 @@ def test_parse_str_enum_values():
             self.e = e
 
     assert parse(Foo, {'e': 'fooo'}).e == MyEnum.FOO
+
+
+def test_parse_union_str_values():
+    class Foo:
+        def __init__(self, e: Union[str, int]):
+            self.e = e
+
+    assert parse(Foo, {'e': 'fooo'}).e == 'fooo'
+
+
+def test_parse_union_int_values():
+    class Foo:
+        def __init__(self, e: Union[str, int]):
+            self.e = e
+
+    assert parse(Foo, {'e': 5}).e == 5
+
+
+def test_parse_union_list_values():
+    class Foo:
+        def __init__(self, e: Union[str, List[str]]):
+            self.e = e
+
+    assert parse(Foo, {'e': ['yo']}).e == ['yo']
