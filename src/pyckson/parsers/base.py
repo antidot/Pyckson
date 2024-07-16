@@ -20,6 +20,8 @@ class BasicParserWithCast(Parser):
         self.cls = cls
 
     def parse(self, json_value):
+        if not isinstance(json_value, self.cls):
+            raise ParserException(f'"{json_value}" is supposed to be a {self.cls.__name__}.')
         return self.cls(json_value)
 
 
