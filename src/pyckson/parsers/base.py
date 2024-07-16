@@ -1,6 +1,9 @@
 from decimal import Decimal
 from enum import Enum
 
+class ParserException(Exception):
+    pass
+
 
 class Parser:
     def parse(self, json_value):
@@ -17,6 +20,8 @@ class BasicParserWithCast(Parser):
         self.cls = cls
 
     def parse(self, json_value):
+        if not isinstance(json_value, self.cls):
+            raise ParserException(f'"{json_value}" is supposed to be a {self.cls.__name__}.')
         return self.cls(json_value)
 
 
@@ -26,6 +31,8 @@ class ListParser(Parser):
         self.cls = list
 
     def parse(self, json_value):
+        if not isinstance(json_value, list):
+            raise ParserException(f'"{json_value}" is supposed to be a list.')
         return [self.sub_parser.parse(item) for item in json_value]
 
 
@@ -35,6 +42,8 @@ class SetParser(Parser):
         self.cls = set
 
     def parse(self, json_value):
+        if not isinstance(json_value, set) and not isinstance(json_value, list):
+            raise ParserException(f'"{json_value}" is supposed to be a set or a list.')
         return {self.sub_parser.parse(item) for item in json_value}
 
 
@@ -43,6 +52,8 @@ class DefaultEnumParser(Parser):
         self.cls = cls
 
     def parse(self, value):
+        if value not in self.cls.__members__:
+            raise ParserException(f'"{value}" is not a valid value for "{self.cls.__name__}" Enum.')
         return self.cls[value]
 
 
@@ -52,6 +63,8 @@ class CaseInsensitiveEnumParser(Parser):
         self.cls = Enum
 
     def parse(self, value):
+        if value.lower() not in self.values:
+            raise ParserException(f'"{value}" is not a valid value for "{self.cls.__name__}" Enum.')
         return self.values[value.lower()]
 
 
@@ -88,5 +101,8 @@ class UnionParser(Parser):
     def parse(self, json_value):
         for parser in self.value_parsers:
             if hasattr(parser, 'cls') and isinstance(json_value, parser.cls):
-                return parser.parse(json_value)
+                try:
+                    return parser.parse(json_value)
+                except:
+                    pass
         raise TypeError(f'{json_value} is not compatible with Union type in Pyckson.')

@@ -1,7 +1,7 @@
 from enum import Enum
 from unittest import TestCase
 
-from pyckson.parsers.base import DefaultEnumParser, CaseInsensitiveEnumParser
+from pyckson.parsers.base import DefaultEnumParser, CaseInsensitiveEnumParser, ParserException
 
 
 class MyEnum(Enum):
@@ -20,11 +20,11 @@ class DefaultEnumParserTest(TestCase):
         self.assertEqual(self.parser.parse('b'), MyEnum.b)
 
     def test_should_not_parse_uppercase_not_in_enum(self):
-        with self.assertRaises(KeyError):
+        with self.assertRaises(ParserException):
             self.parser.parse('B')
 
     def test_should_not_parse_value_not_in_enum(self):
-        with self.assertRaises(KeyError):
+        with self.assertRaises(ParserException):
             self.parser.parse('c')
 
 
@@ -46,5 +46,5 @@ class CaseInsensitiveEnumParserTest(TestCase):
         self.assertEqual(self.parser.parse('b'), MyInsensitiveEnum.B)
 
     def test_should_not_parse_value_not_in_enum(self):
-        with self.assertRaises(KeyError):
+        with self.assertRaises(ParserException):
             self.parser.parse('c')
