@@ -50,6 +50,8 @@ class DefaultEnumParser(Parser):
         self.cls = cls
 
     def parse(self, value):
+        if value not in self.cls.__members__:
+            raise ParserException(f'"{value}" is not a valid value for "{self.cls.__name__}" Enum.')
         return self.cls[value]
 
 
@@ -59,6 +61,8 @@ class CaseInsensitiveEnumParser(Parser):
         self.cls = Enum
 
     def parse(self, value):
+        if value.lower() not in self.values:
+            raise ParserException(f'"{value}" is not a valid value for "{self.cls.__name__}" Enum.')
         return self.values[value.lower()]
 
 
