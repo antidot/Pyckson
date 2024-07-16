@@ -2,6 +2,9 @@ from decimal import Decimal
 from enum import Enum
 from typing import List
 
+class ParserException(Exception):
+    pass
+
 
 class Parser:
     def parse(self, json_value):
