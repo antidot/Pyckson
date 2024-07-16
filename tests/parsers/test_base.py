@@ -44,6 +44,14 @@ class TestUnionParser:
 
         assert_that(result).is_equal_to(5)
 
+    def test_should_parse_list_of_list_in_union(self):
+        parser = UnionParser([ListParser(BasicParserWithCast(int)), ListParser(ListParser(BasicParserWithCast(int)))])
+
+        result = parser.parse([[5], [6]])
+
+        assert result == [[5], [6]]
+
+
 
 class TestListParser:
     def test_should_accept_list(self):
