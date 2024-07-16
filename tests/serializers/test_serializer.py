@@ -322,6 +322,30 @@ class SerializerTest(TestCase):
         assert serialize(Foo(X('a'))) == {'foo': {'x': 'a'}}
 
 
+def test_serialize_union_str_values():
+    class Foo:
+        def __init__(self, e: Union[str, int]):
+            self.e = e
+
+    assert serialize(Foo('fooo')) == {'e': 'fooo'}
+
+
+def test_serialize_union_int_values():
+    class Foo:
+        def __init__(self, e: Union[str, int]):
+            self.e = e
+
+    assert serialize(Foo(5)) == {'e': 5}
+
+
+def test_serialize_union_list_values():
+    class Foo:
+        def __init__(self, e: Union[str, List[str]]):
+            self.e = e
+
+    assert serialize(Foo(['yo'])) == {'e': ['yo']}
+
+
 def test_should_serialize_decimal():
     class Foo:
         def __init__(self, x: Decimal):
