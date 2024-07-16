@@ -1,6 +1,6 @@
 from assertpy import assert_that
 
-from pyckson.parsers.base import UnionParser, BasicParserWithCast, ListParser, TypingDictParser, BasicParser
+from pyckson.parsers.base import UnionParser, BasicParserWithCast, ListParser, BasicParser
 
 
 class TestUnionParser:
