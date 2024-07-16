@@ -105,5 +105,8 @@ class UnionParser(Parser):
     def parse(self, json_value):
         for parser in self.value_parsers:
             if hasattr(parser, 'cls') and isinstance(json_value, parser.cls):
-                return parser.parse(json_value)
+                try:
+                    return parser.parse(json_value)
+                except:
+                    pass
         raise TypeError('{} is not compatible with Union type in Pyckson.'.format({json_value}))
