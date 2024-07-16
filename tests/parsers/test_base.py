@@ -3,6 +3,20 @@ from assertpy import assert_that
 from pyckson.parsers.base import ParserException, SetParser, UnionParser, BasicParserWithCast, ListParser, BasicParser
 
 
+class TestBasicParserWithCast:
+    def test_should_handle_simple_type(self):
+        parser = BasicParserWithCast(int)
+
+        result = parser.parse(5)
+
+        assert_that(result).is_equal_to(5)
+
+    def test_should_raise_when_it_is_not_the_correct_type(self):
+        parser = BasicParserWithCast(str)
+
+        assert_that(parser.parse).raises(ParserException).when_called_with(['yo'])
+
+
 class TestUnionParser:
     def test_should_parse_simple_union(self):
         parser = UnionParser([BasicParserWithCast(int)])
