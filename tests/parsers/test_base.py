@@ -1,6 +1,6 @@
 from assertpy import assert_that
 
-from pyckson.parsers.base import UnionParser, BasicParserWithCast, ListParser, BasicParser
+from pyckson.parsers.base import ParserException, UnionParser, BasicParserWithCast, ListParser, BasicParser
 
 
 class TestUnionParser:
@@ -29,3 +29,17 @@ class TestUnionParser:
         result = parser.parse(5)
 
         assert_that(result).is_equal_to(5)
+
+
+class TestListParser:
+    def test_should_accept_list(self):
+        parser = ListParser(BasicParserWithCast(int))
+
+        result = parser.parse([5])
+
+        assert_that(result).is_equal_to([5])
+
+    def test_should_raise_when_parse_other_than_list(self):
+        parser = ListParser(BasicParserWithCast(int))
+
+        assert_that(parser.parse).raises(ParserException).when_called_with(5)
