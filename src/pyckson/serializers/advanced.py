@@ -2,9 +2,9 @@ from datetime import date, datetime
 
 from pyckson.const import PYCKSON_SERIALIZER, has_cls_attr
 from pyckson.dates.helpers import get_class_date_formatter, get_class_use_explicit_nulls
-from pyckson.helpers import is_base_type, get_custom_serializer
+from pyckson.helpers import is_base_type, get_custom_serializer, is_base_type_with_cast
 from pyckson.providers import ModelProvider
-from pyckson.serializers.base import Serializer, BasicSerializer
+from pyckson.serializers.base import Serializer, BasicSerializer, ListSerializer
 
 
 class GenericSerializer(Serializer):
@@ -12,10 +12,12 @@ class GenericSerializer(Serializer):
         self.model_provider = model_provider
 
     def serialize(self, obj):
-        if is_base_type(obj):
+        if is_base_type(obj) or is_base_type_with_cast(obj):
             return BasicSerializer().serialize(obj)
         elif has_cls_attr(obj.__class__, PYCKSON_SERIALIZER):
             return get_custom_serializer(obj.__class__).serialize(obj)
+        elif isinstance(obj, list):
+            return ListSerializer(GenericSerializer(self.model_provider)).serialize(obj)
         else:
             return ClassSerializer(self.model_provider).serialize(obj)
 

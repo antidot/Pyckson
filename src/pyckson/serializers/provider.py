@@ -2,7 +2,7 @@ from decimal import Decimal
 
 from pyckson.defaults import apply_enum_default
 from pyckson.helpers import is_list_annotation, is_set_annotation, is_enum_annotation, is_basic_dict_annotation, \
-    is_typing_dict_annotation
+    is_typing_dict_annotation, is_union_annotation
 
 try:
     from typing import _ForwardRef as ForwardRef
@@ -52,6 +52,8 @@ class SerializerProviderImpl(SerializerProvider):
             if obj_type.__args__[0] != str:
                 raise TypeError('typing.Dict key can only be str in class {}'.format(parent_class))
             return TypingDictSerializer(self.get(obj_type.__args__[1], parent_class, name_in_parent))
+        if is_union_annotation(obj_type):
+            return GenericSerializer(self.model_provider)
         if has_cls_attr(obj_type, PYCKSON_SERIALIZER):
             return CustomDeferredSerializer(obj_type)
         return ClassSerializer(self.model_provider)
