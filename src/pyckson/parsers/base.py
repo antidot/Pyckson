@@ -40,6 +40,8 @@ class SetParser(Parser):
         self.cls = set
 
     def parse(self, json_value):
+        if not isinstance(json_value, set) and not isinstance(json_value, list):
+            raise ParserException(f'"{json_value}" is supposed to be a set or a list.')
         return {self.sub_parser.parse(item) for item in json_value}
 
 
