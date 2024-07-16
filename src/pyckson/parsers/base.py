@@ -1,6 +1,9 @@
 from decimal import Decimal
 from enum import Enum
 
+from pyckson.const import BASIC_TYPES
+
+
 class ParserException(Exception):
     pass
 
@@ -20,6 +23,8 @@ class BasicParserWithCast(Parser):
         self.cls = cls
 
     def parse(self, json_value):
+        if not any(isinstance(json_value, basic_type) for basic_type in BASIC_TYPES):
+            raise ParserException(f'"{json_value}" is supposed to be a {self.cls.__name__}.')
         return self.cls(json_value)
 
 
