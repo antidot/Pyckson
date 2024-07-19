@@ -21,5 +21,8 @@ def test_union_with_none_should_be_optional():
 
 
 def test_other_unions_should_not_be_optional():
-    assert inspect_optional_typing(Union[int, str]) == (False, int)
-    assert inspect_optional_typing(Union[int, str, None]) == (False, int)
+    assert inspect_optional_typing(Union[int, str]) == (False, Union[int, str])
+
+
+def test_multiple_union_with_none_should_be_optional():
+    assert inspect_optional_typing(Union[int, str, None]) == (True, Union[int, str])
